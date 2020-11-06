@@ -1,0 +1,64 @@
+\documentclass[conference]{IEEEtran}
+\usepackage[english]{babel}
+\input{commands.tex}
+
+%%%%%%%% MARGIN
+\geometry{verbose, letterpaper, tmargin=3cm,
+  bmargin=3cm,lmargin=2.5cm,rmargin=2.5cm}
+
+%%%%%%%% PARAGRAPH SETTINGS
+% https://bit.ly/36WrtN4
+\setlength\parindent{0pt}
+
+% https://bit.ly/371dvto
+\setlength{\parskip}{5pt}
+
+%%%%%%%% HYPERREF PACKAGE
+\usepackage{hyperref}
+\hypersetup{linkcolor=blue}
+\hypersetup{citecolor=blue}
+\hypersetup{urlcolor=blue}
+\hypersetup{colorlinks=true}
+
+
+%%%%%%%% BIB-LATEX STUFF
+\usepackage[style=ieee,
+            bibstyle=ieee,
+            citestyle=ieee,
+            hyperref=true,
+            backend=biber]{biblatex}
+\addbibresource{ref.bib} %Put relative path to ref
+
+%%%%%%%% DEFINITION AND THEOREM DEFINITIONS
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\theoremstyle{remark}
+\newtheorem{question}{Question}
+
+\newtheorem{theorem}{Theorem}[section]
+
+
+%%%%%%%% CODE RENDERING !!! UNCOMMENT IF NEEDED !!!
+% Compile with flag -shell-escape
+%\usepackage{minted}
+
+%%%%%%%% START DOCUMENT
+
+\title{}
+\author{Juan Sebasti\'an C\'ardenas-Rodríguez \\
+  \scalebox{0.7}{Mathematical Engineering, Universidad EAFIT}}
+\date{\today}
+
+
+\begin{document}
+\maketitle
+
+\textit{Note}: All the code and the latex file can be found in
+\href{https://github.com/juanscr/ai-works}{the github repository}.
+
+\printbibliography
+\end{document}
