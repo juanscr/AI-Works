@@ -29,26 +29,55 @@ function nn(ls :: Vector{Int64}, η :: Float64, train_data, ϕs)
     params = Flux.params(chain)
     opt = Flux.Optimise.Descent(η)
     loss(x, y) = Flux.Losses.mse(chain(x), y)
+
+    Δs = zeros(50, trunc(Int, length(params) / 2))
+
     # Training
-    for i in 1:50
+    for i in 1:100
         Flux.train!(loss, params, train_data, opt)
+
+        # Gradients
+        gs = gradient(params) do
+            loss(train_data[end]...)
+        end
+
+        for j in 1:2:length(params)
+            Δs[i, trunc(Int, (j + 1)/2)] = sum(gs[params[j]])
+        end
+        break
     end
+
+    # Gradients
+    return chain, Δs
 end
 
 # ====== Main ====== #
 # Data reading
 data_csv = CSV.File("data/num-data.csv")
 data = zeros(length(data_csv), 7)
-i = 1
+k = 1
 for row in data_csv
-    data[i, 1] = row.Column1
-    data[i, 2] = row.Column2
-    data[i, 3] = row.Column3
-    data[i, 4] = row.Column4
-    data[i, 5] = row.Column5
-    data[i, 6] = row.Column6
-    data[i, 7] = row.Column7
+    data[k, 1] = row.Column1
+    data[k, 2] = row.Column2
+    data[k, 3] = row.Column3
+    data[k, 4] = row.Column4
+    data[k, 5] = row.Column5
+    data[k, 6] = row.Column6
+    data[k, 7] = row.Column7
+    global k += 1
 end
 
+# Data testing
+dat0 = [([0, 0], [0]),
+        ([1, 0], [1]),
+        ([0, 1], [1]),
+        ([1, 1], [1])]
+
 # Testing
-nn([1], 0.2, get_training_data(data[1:6, :], data[7:end, :]), [σ])
+chain, Δs = nn([2], 0.5, dat0, [σ, σ])
+plot(Δs)
+savefig("testing.pdf")
+
+for dat1 in dat0
+    println(chain(dat1[1]), " == ", dat1[2])
+end
