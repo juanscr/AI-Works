@@ -3,6 +3,7 @@ using CSV
 using Plots
 using Random
 using Tables
+include("modules/Tools.jl")
 using TSne
 
 # Fixed seed
@@ -49,10 +50,6 @@ end;
 data = collect(transpose(hcat(data...)))
 
 # ============ Embedded Data ============ #
-function normalize(A)
-    return A ./ maximum(abs.(A), dims = 1)
-end
-
 function plot_data(data)
     scatter(data[:, 1], data[:, 2],
             markersize = 5,
@@ -98,3 +95,38 @@ u, _ = find_membership(data, euclidean, protos, [])
 # CSV creation
 final_data = [data reshape(u[1, :], size(data, 1), 1)]
 CSV.write("data/num-data.csv", Tables.table(final_data))
+
+
+# ============ Separate data ============ #
+indexes = 1:size(data, 1)
+
+# Training
+n_training = trunc(Int, 0.6 * size(data)[1])
+indexes_tr = sort(sample(collect(indexes), n_training, replace = false))
+
+# Testing
+n_testing = trunc(Int, 0.2 * size(data)[1])
+indexes_avail = []
+for i in indexes
+    if i ∉ indexes_tr
+        push!(indexes_avail, i)
+    end
+end
+indexes_te = sort(sample(indexes_avail, n_testing, replace = false))
+
+# Validation
+indexes_val = []
+for i in indexes
+    if i ∉ indexes_tr && i ∉ indexes_te
+        push!(indexes_val, i)
+    end
+end
+indexes_val = sort(indexes_val)
+
+# Fill holes
+indexes_te = vcat(indexes_te, -ones(n_training - n_testing))
+indexes_val = vcat(indexes_val, -ones(n_training - length(indexes_val)))
+indexes_mat = [indexes_tr indexes_te indexes_val]
+
+# File of indexes
+CSV.write("data/indexes.csv", Tables.table(indexes_mat))
