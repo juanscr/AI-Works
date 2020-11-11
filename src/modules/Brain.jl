@@ -3,7 +3,6 @@ include("ActFunctions.jl")
 using Distributions
 using LinearAlgebra
 using Random
-using Statistics
 
 # ========== Neural Network ========== #
 mutable struct Brain
