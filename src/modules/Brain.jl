@@ -2,7 +2,6 @@
 include("ActFunctions.jl")
 using Distributions
 using LinearAlgebra
-using Plots
 using Random
 using Statistics
 
