@@ -3,7 +3,6 @@ include("modules/ActFunctions.jl")
 using CSV
 include("modules/Brain.jl")
 using Random
-using StatsBase
 
 # Random seed
 Random.seed!(1234)
