@@ -1,7 +1,11 @@
 # ====== Global Behavior ====== #
+include("modules/ActFunctions.jl")
 using CSV
-using Flux
+include("modules/Brain.jl")
 using Plots
+using Random
+
+Random.seed!(1234)
 
 # ====== Transform data ====== #
 function get_training_data(train_datax :: Matrix{Float64},
@@ -11,44 +15,6 @@ function get_training_data(train_datax :: Matrix{Float64},
         push!(data, (train_datax[i, :], train_datay[i, :]))
     end
     return data
-end
-
-# ====== NN ====== #
-function nn(ls :: Vector{Int64}, η :: Float64, train_data, ϕs)
-    # Layers Construction
-    layers = [Dense(length(train_data[1][1]), ls[1], ϕs[1])]
-    for i in 2:(length(ls) - 1)
-        push!(layers, Dense(ls[i - 1], ls[i], ϕs[i]))
-    end
-    push!(layers, Dense(ls[end], length(train_data[1][2]), ϕs[end]))
-
-    # NN construction
-    chain = Chain(layers...)
-
-    # Initialization for training
-    params = Flux.params(chain)
-    opt = Flux.Optimise.Descent(η)
-    loss(x, y) = Flux.Losses.mse(chain(x), y)
-
-    Δs = zeros(50, trunc(Int, length(params) / 2))
-
-    # Training
-    for i in 1:100
-        Flux.train!(loss, params, train_data, opt)
-
-        # Gradients
-        gs = gradient(params) do
-            loss(train_data[end]...)
-        end
-
-        for j in 1:2:length(params)
-            Δs[i, trunc(Int, (j + 1)/2)] = sum(gs[params[j]])
-        end
-        break
-    end
-
-    # Gradients
-    return chain, Δs
 end
 
 # ====== Main ====== #
@@ -66,18 +32,19 @@ for row in data_csv
     data[k, 7] = row.Column7
     global k += 1
 end
+data = data ./ maximum(data, dims = 1)
 
-# Data testing
-dat0 = [([0, 0], [0]),
-        ([1, 0], [1]),
-        ([0, 1], [1]),
-        ([1, 1], [1])]
+# Activation Functions
+sig = Sigmoid()
+relu = ReLu()
+tant = Tanh()
+h = Heaviside()
 
-# Testing
-chain, Δs = nn([2], 0.5, dat0, [σ, σ])
-plot(Δs)
+# Brain
+brain = Brain(6, 1, [2], [sig, sig])
+grads, avg_err = brain.learn_data(data[:, 1:6], data[:, 7:end],
+                                            epocs=1000, η=0.9, α=0.1)
+plot(grads)
 savefig("testing.pdf")
-
-for dat1 in dat0
-    println(chain(dat1[1]), " == ", dat1[2])
-end
+plot(sum(avg_err, dims = 2))
+savefig("testing2.pdf")
