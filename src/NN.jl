@@ -1,8 +1,8 @@
 # ====== Global Behavior ====== #
 include("modules/ActFunctions.jl")
-using CSV
 include("modules/Brain.jl")
 using Random
+include("modules/Tools.jl")
 
 # Random seed
 Random.seed!(1234)
@@ -61,28 +61,9 @@ function run_brain(η :: Float64, ls :: Vector{Int64}, tr_datax :: Matrix{Float6
 end
 
 # ====== Main ====== #
-# Data reading
-data_csv = CSV.File("data/num-data.csv")
-data = zeros(length(data_csv), 7)
-k = 1
-for row in data_csv
-    data[k, 1] = row.Column1
-    data[k, 2] = row.Column2
-    data[k, 3] = row.Column3
-    data[k, 4] = row.Column4
-    data[k, 5] = row.Column5
-    data[k, 6] = row.Column6
-    data[k, 7] = row.Column7
-    global k += 1
-end
-data = normalize(data)
-
-# Training data
-indexes_csv = CSV.File("data/indexes.csv")
-indexes_tr = indexes_csv.columns[1]
-
-train_datax = data[indexes_tr, 1:6]
-train_datay = data[indexes_tr, 7:end]
+train_data, _, _ = create_data("data/num-data.csv")
+train_datax = train_data[1]
+train_datay = train_data[2]
 
 # Parameters for running
 ηs = [0.2, 0.5, 0.9]
