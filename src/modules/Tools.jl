@@ -12,7 +12,7 @@ function purge(indexes :: Vector{Int64})
 end
 
 # Get data
-function create_data(name_file :: String, sep = true)
+function create_data(name_file :: String; sep = true)
     # Data reading
     data_csv = CSV.File("data/num-data.csv")
     data = zeros(length(data_csv), 7)
@@ -30,7 +30,7 @@ function create_data(name_file :: String, sep = true)
     data = normalize(data)
 
     if !sep
-        return data
+        return data[:, 1:6], data[:, 7:end]
     end
 
     # Separate data
@@ -52,3 +52,18 @@ function create_data(name_file :: String, sep = true)
     return (train_datax, train_datay), (test_datax, test_datay),
            (val_datax, val_datay)
 end
+
+# Meshgrid
+function meshgrid(data, n)
+    mins = minimum(data, dims = 1)
+    maxs = maximum(data, dims = 1)
+    ranges = [mins[j]:(maxs[j] - mins[j])/n:maxs[j] for j in 1:length(mins)]
+
+    # Grid generation
+    grid = reshape(collect(Iterators.product(ranges...)), 1, :)
+
+    # Array creation
+    array = vcat(map(x -> transpose(collect(x)), grid)...)
+
+    return array
+end;
