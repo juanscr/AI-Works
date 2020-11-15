@@ -67,3 +67,31 @@ function meshgrid(data, n)
 
     return array
 end;
+
+# Generate results for classifier
+function generate_results(clf, name_file :: String, data_name :: String,
+                          kernel :: String, mesh :: Matrix{Float64};
+                          extra_info = "")
+    datax, _ = create_data(data_name, sep = false)
+    class = clf.predict(datax)
+
+    # File
+    open(name_file, "a") do io
+        if length(extra_info) != 0
+            write(io, string(extra_info, "\n"))
+        end
+
+        # Classification
+        write(io, "Classification\n")
+        for num in class
+            write(io, string(num, "\n"))
+        end
+
+        # Meshgrid
+        Z = decision_function(clf, mesh)
+        write(io, "Meshgrid\n")
+        for i in 1:length(Z)
+            write(io, string(Z[i], "\n"))
+        end
+    end
+end
