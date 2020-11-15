@@ -87,7 +87,12 @@ function generate_results(clf, name_file :: String, data_name :: String,
         end
 
         # Meshgrid
-        Z = decision_function(clf, mesh)
+        Z = nothing
+        try
+            Z = decision_function(clf, datax)
+        catch
+            Z = predict_proba(clf, datax)[:, 2]
+        end
         write(io, "Meshgrid\n")
         for i in 1:length(Z)
             write(io, string(Z[i], "\n"))
