@@ -70,8 +70,7 @@ end;
 
 # Generate results for classifier
 function generate_results(clf, name_file :: String, data_name :: String,
-                          kernel :: String, mesh :: Matrix{Float64};
-                          extra_info = "")
+                          mesh :: Matrix{Float64}; extra_info = "")
     datax, _ = create_data(data_name, sep = false)
     class = clf.predict(datax)
 

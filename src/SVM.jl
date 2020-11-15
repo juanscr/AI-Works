@@ -45,6 +45,5 @@ for kernel in kernels
     svm = SVC(kernel = kernel)
     fit!(svm, train_datax, reshape(train_datay, :))
     extra_info = string("Kernel,", kernel)
-    generate_results(svm, svm_results, data_name, kernel, mesh,
-                     extra_info=extra_info)
+    generate_results(svm, svm_results, data_name, mesh, extra_info=extra_info)
 end
