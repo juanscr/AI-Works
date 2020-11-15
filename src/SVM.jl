@@ -12,9 +12,12 @@ function generate_meshgrid(data_name :: String, name_file :: String; n = 10)
         write(io, "X1,X2,X3,X4,X5,X6\n")
         for i in 1:size(mesh, 1)
             for j in 1:size(mesh, 2)
-                write(io, string(mesh[i, j], ","))
+                if j == size(mesh, 2)
+                    write(io, string(mesh[i, j], "\n"))
+                else
+                    write(io, string(mesh[i, j], ","))
+                end
             end
-            write(io, "\n")
         end
     end
     return mesh
