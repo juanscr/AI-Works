@@ -2,7 +2,7 @@ using CSV
 
 # Normalize data
 function normalize(data)
-    return data ./ maximum(data, dims = 1)
+    return data ./ maximum(abs.(data), dims = 1)
 end
 
 # Clean indexes
