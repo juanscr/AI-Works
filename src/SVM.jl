@@ -9,7 +9,7 @@ function generate_meshgrid(data_name :: String, name_file :: String; n = 10)
     datax, _ = create_data(data_name, sep = false)
     mesh = meshgrid(datax, n)
     open(name_file, "w") do io
-        write(io, "Meshgrid\n")
+        write(io, "X1,X2,X3,X4,X5,X6\n")
         for i in 1:size(mesh, 1)
             for j in 1:size(mesh, 2)
                 write(io, string(mesh[i, j], ","))
