@@ -38,7 +38,6 @@ train_datay = train_data[2]
 dt = DecisionTreeClassifier(criterion = "entropy")
 mesh = read_meshgrid("../results/meshgrid.csv")
 fit!(dt, train_datax, reshape(train_datay, :))
-generate_results(dt, dt_results, data_name, mesh)
 
 # Save tree
 save_model = "../results/tree.joblib"
