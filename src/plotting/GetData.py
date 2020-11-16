@@ -2,13 +2,16 @@
 
 import numpy as np
 
+# Normalize data
 def normalize(data):
     return data / np.max(np.abs(data), axis=0)
 
+# Purge columns
 def purge(column):
     index = np.where(column == -2)[0][0]
     return column[:index]
 
+# Create data set
 def create_data(name_file, index_file, sep=True):
     data_csv = open(name_file).readlines()[1:]
     data = np.zeros((len(data_csv), 7))
@@ -48,3 +51,13 @@ def create_data(name_file, index_file, sep=True):
 
     return (train_datax, train_datay), (test_datax, test_datay),\
            (val_datax, val_datay)
+
+# Create meshgrid
+def create_meshgrid(name_file):
+    mesh_csv = open(name_file).readlines()[1:]
+    mesh = np.zeros((len(mesh_csv), 6))
+    k = 0
+    for row in mesh_csv:
+        mesh[k, :] = list(map(float, row.split(",")))
+        k += 1
+    return mesh
