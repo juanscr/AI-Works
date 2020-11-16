@@ -1,8 +1,10 @@
 # ==== Global behavior ==== #
 using CSV
+using PyCall
 using ScikitLearn
 include("modules/Tools.jl")
 
+@pyimport joblib
 @sk_import tree: DecisionTreeClassifier
 
 # ==== Function ==== #
@@ -37,3 +39,7 @@ dt = DecisionTreeClassifier(criterion = "entropy")
 mesh = read_meshgrid("../results/meshgrid.csv")
 fit!(dt, train_datax, reshape(train_datay, :))
 generate_results(dt, dt_results, data_name, mesh)
+
+# Save tree
+save_model = "../results/tree.joblib"
+joblib.dump(dt, save_model)
