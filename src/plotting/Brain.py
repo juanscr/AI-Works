@@ -9,7 +9,7 @@ from matplotlib import rc
 from sklearn.metrics import roc_curve, auc
 
 rc('text', usetex=True)
-save = lambda x: plt.savefig("../../results/figs/" + x, bbox_inches='tight')
+save = lambda x: plt.savefig("../../article/figs/" + x, bbox_inches='tight')
 
 # ==== Brain ==== #
 class Brain:
