@@ -12,7 +12,7 @@ function purge(indexes :: Vector{Int64})
 end
 
 # Get data
-function create_data(name_file :: String; sep = true)
+function create_data(name_file :: String; sep = true, norm = true)
     # Data reading
     data_csv = CSV.File("data/num-data.csv")
     data = zeros(length(data_csv), 7)
@@ -27,7 +27,9 @@ function create_data(name_file :: String; sep = true)
         data[k, 7] = row.Column7
         k += 1
     end
-    data = normalize(data)
+    if norm
+        data = normalize(data)
+    end
 
     if !sep
         return data[:, 1:6], data[:, 7:end]
