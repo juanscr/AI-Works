@@ -29,7 +29,7 @@ data_name = "data/num-dats.csv"
 dt_results = "../results/dt-results.csv"
 
 # Data
-train_data, _, _ = create_data("data/num-data.csv", norm = false)
+train_data, _, _ = create_data("data/num-data.csv")
 
 train_datax = train_data[1]
 train_datay = train_data[2]
