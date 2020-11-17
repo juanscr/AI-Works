@@ -71,10 +71,64 @@ function write_brain(brain :: Brain, grads :: Matrix{Float64},
     write_info_run(grads, reshape(avg_err, :), name_file, η, ls, Z)
 end
 
+function run_combinations(ηs :: Vector{Float64}, ls :: Vector{Int64},
+                          neurons :: Vector{Int64}, tr_datax :: Matrix{Float64},
+                          tr_datay :: Matrix{Float64}, selection_criterion,
+                          number_of_brains :: Int64)
+    # Activation functions
+    sig = Sigmoid()
+
+    # Run all combinations
+    for η in ηs
+        for l in ls
+            possible_neurons = get_neuron_combinations(l, neurons)
+            for i in 1:size(possible_neurons, 1)
+                ls_aux = possible_neurons[i, :]
+
+                # Run brain
+                brain = Brain(size(tr_datax, 2), size(tr_datay, 2), ls_aux,
+                            [sig for i in 1:(length(ls_aux) + 1)])
+                grads, avg_err = brain.learn_data(tr_datax, tr_datay, η=η,
+                                                α=0.1, epocs=50)
+                avg_err = sum(avg_err / size(avg_err, 2), dims = 2)
+
+                # Fill list
+                if length(selected_brains) < number_of_brains
+                    push!(selected_brains, (brain, grads, avg_err, η))
+                    sort!(selected_brains, by = selection_criterion)
+                    continue
+                end
+
+                # Replace list
+                err = selection_criterion((brain, grads, avg_err, η))
+
+                # Best ones
+                for i in 1:(number_of_brains - 1)
+                    if selection_criterion(selected_brains[i]) > err
+                        selected_brains[(i+1):(end - 1)] = selected_brains[i:(end - 2)]
+                        selected_brains[i] = (brain, grads, avg_err, η)
+                        break
+                    end
+                end
+
+                # Worst one
+                if selection_criterion(selected_brains[end]) < err
+                    selected_brains[end] = (brain, grads, avg_err, η)
+                end
+            end
+        end
+    end
+    return selected_brains
+end
+
 # ====== Main ====== #
 train_data, _, _ = create_data("data/num-data.csv")
 tr_datax = train_data[1]
 tr_datay = train_data[2]
+
+train_data_emb, _, _ = create_data("data/embedded-data.csv")
+tr_dataxe = train_data_emb[1]
+tr_dataye = train_data_emb[2]
 
 # Parameters for running
 ηs = [0.2, 0.5, 0.9]
@@ -86,51 +140,17 @@ selected_brains = []
 number_of_brains = 3
 selection_criterion = x -> x[3][end]
 
-# Activation functions
-sig = Sigmoid()
+# Run
+selected_brains = run_combinations(ηs, ls, neurons, tr_datax, tr_datay,
+                                   selection_criterion, number_of_brains)
+selected_brainse = run_combinations(ηs, ls, neurons, tr_dataxe, tr_dataye,
+                                    selection_criterion, number_of_brains)
 
-# Run all combinations
-for η in ηs
-    for l in ls
-        possible_neurons = get_neuron_combinations(l, neurons)
-        for i in 1:size(possible_neurons, 1)
-            ls_aux = possible_neurons[i, :]
-
-            # Run brain
-            brain = Brain(size(tr_datax, 2), size(tr_datay, 2), ls_aux,
-                          [sig for i in 1:(length(ls_aux) + 1)])
-            grads, avg_err = brain.learn_data(tr_datax, tr_datay, η=η,
-                                              α=0.1, epocs=50)
-            avg_err = sum(avg_err / size(avg_err, 2), dims = 2)
-
-            # Fill list
-            if length(selected_brains) < number_of_brains
-                push!(selected_brains, (brain, grads, avg_err, η))
-                sort!(selected_brains, by = selection_criterion)
-                continue
-            end
-
-            # Replace list
-            err = selection_criterion((brain, grads, avg_err, η))
-
-            # Best ones
-            for i in 1:(number_of_brains - 1)
-                if selection_criterion(selected_brains[i]) > err
-                    selected_brains[(i+1):(end - 1)] = selected_brains[i:(end - 2)]
-                    selected_brains[i] = (brain, grads, avg_err, η)
-                    break
-                end
-            end
-
-            # Worst one
-            if selection_criterion(selected_brains[end]) < err
-                selected_brains[end] = (brain, grads, avg_err, η)
-            end
-        end
-    end
-end
-
-# Write file
+# Write files
 for selected_brain in selected_brains
     write_brain(selected_brain..., "../results/nn-results.csv")
+end
+
+for selected_brain in selected_brainse
+    write_brain(selected_brain..., "../results/nn-results-emb.csv")
 end
