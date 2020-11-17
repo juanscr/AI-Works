@@ -17,9 +17,7 @@ train_datay = train_data[2]
 kernels = ["linear", "rbf", "poly"]
 
 # Files
-data_name = "data/num-dats.csv"
-meshgrid_file = "../results/meshgrid.csv"
-svm_results = "../results/svm-results.csv"
+data_name = "data/num-data.csv"
 
 # Output
 prefix = "../results/svm-"
@@ -27,5 +25,15 @@ for kernel in kernels
     svm = SVC(kernel = kernel)
     fit!(svm, train_datax, reshape(train_datay, :))
     joblib.dump(svm, string(prefix, kernel, ".joblib"))
+end
 
+# Files embedded data
+data_name = "data/embedded-data.csv"
+
+# Output
+prefix = "../results/svm-emb-"
+for kernel in kernels
+    svm = SVC(kernel = kernel)
+    fit!(svm, train_datax, reshape(train_datay, :))
+    joblib.dump(svm, string(prefix, kernel, ".joblib"))
 end
