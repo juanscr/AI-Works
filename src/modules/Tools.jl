@@ -1,4 +1,6 @@
 using CSV
+using Ipopt
+using JuMP
 
 # Normalize data
 function normalize(data)
@@ -45,4 +47,23 @@ function create_data(name_file :: String; sep = true, norm = true)
 
     return (train_datax, train_datay), (test_datax, test_datay),
            (val_datax, val_datay)
+end
+
+# Calculate ε-dimension
+function calculate_min_error(m :: Int64, δ :: Float64, VC :: Float64)
+    model = Model(with_optimizer(Ipopt.Optimizer, print_level = 0))
+
+    # Variables
+    @variable(model, 0 <= ε)
+
+    # Constraints
+    @constraint(model, 4 * log(2 / δ) / m <= ε)
+    @NLconstraint(model, 8 * VC * log(13 / ε) / ε <= m)
+
+    # Objective function
+    @objective(model, Min, ε^2)
+
+    # Optimization
+    JuMP.optimize!(model)
+    return JuMP.value(ε)
 end
