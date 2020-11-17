@@ -53,7 +53,7 @@ end
 
 function write_brain(brain :: Brain, grads :: Matrix{Float64},
                      avg_err :: Matrix{Float64}, η :: Float64,
-                     name_file :: String)
+                     name_file :: String, file_data :: String)
     # Number of neurons
     ls = Vector{Int64}([])
     for ω in brain.ω[1:(end-1)]
@@ -61,7 +61,7 @@ function write_brain(brain :: Brain, grads :: Matrix{Float64},
     end
 
     # Output of NN
-    datax, _ = create_data("data/num-data.csv", sep = false)
+    datax, _ = create_data(file_data, sep = false)
     Z = zeros(size(datax, 1))
     for i in 1:size(datax, 1)
         Z[i] = brain.propagate(datax[i, :])[1, 1]
@@ -79,6 +79,7 @@ function run_combinations(ηs :: Vector{Float64}, ls :: Vector{Int64},
     sig = Sigmoid()
 
     # Run all combinations
+    selected_brains = []
     for η in ηs
         for l in ls
             possible_neurons = get_neuron_combinations(l, neurons)
@@ -123,12 +124,12 @@ end
 
 # ====== Main ====== #
 train_data, _, _ = create_data("data/num-data.csv")
-tr_datax = train_data[1]
-tr_datay = train_data[2]
+train_datax = train_data[1]
+train_datay = train_data[2]
 
 train_data_emb, _, _ = create_data("data/embedded-data.csv")
-tr_dataxe = train_data_emb[1]
-tr_dataye = train_data_emb[2]
+train_dataxe = train_data_emb[1]
+train_dataye = train_data_emb[2]
 
 # Parameters for running
 ηs = [0.2, 0.5, 0.9]
@@ -136,21 +137,22 @@ ls = [1, 2, 3]
 neurons = [1, 2, 3]
 
 # Selection
-selected_brains = []
 number_of_brains = 3
 selection_criterion = x -> x[3][end]
 
 # Run
-selected_brains = run_combinations(ηs, ls, neurons, tr_datax, tr_datay,
+selected_brains = run_combinations(ηs, ls, neurons, train_datax, train_datay,
                                    selection_criterion, number_of_brains)
-selected_brainse = run_combinations(ηs, ls, neurons, tr_dataxe, tr_dataye,
+selected_brainse = run_combinations(ηs, ls, neurons, train_dataxe, train_dataye,
                                     selection_criterion, number_of_brains)
 
 # Write files
 for selected_brain in selected_brains
-    write_brain(selected_brain..., "../results/nn-results.csv")
+    write_brain(selected_brain..., "../results/nn-results.csv",
+                "data/num-data.csv")
 end
 
 for selected_brain in selected_brainse
-    write_brain(selected_brain..., "../results/nn-results-emb.csv")
+    write_brain(selected_brain..., "../results/nn-results-emb.csv",
+                "data/embedded-data.csv")
 end
