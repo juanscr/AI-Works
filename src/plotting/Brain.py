@@ -55,11 +55,13 @@ class Brain:
 
         return brains
 
-    def plotmemaybe(self):
+    def plotmemaybe(self, aux_prefix=""):
         prefix = ""
         for l in self.ls:
             prefix += str(l) + "-"
         prefix += str(self.eta) + "-"
+        if len(aux_prefix) != 0:
+            prefix += aux_prefix + "-"
 
         # Plot information
         self.plot_grads(prefix + "gradients.pdf")
@@ -107,3 +109,8 @@ class Brain:
 brains = Brain.read_brains("../../results/nn-results.csv")
 for brain in brains:
     brain.plotmemaybe()
+
+# Data creation embedded
+brains = Brain.read_brains("../../results/nn-results-emb.csv")
+for brain in brains:
+    brain.plotmemaybe("emb")
