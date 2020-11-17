@@ -15,8 +15,8 @@ end
 function create_data(name_file :: String; sep = true, norm = true)
     # Data reading
     data_col = CSV.File(name_file).columns
-    data = zeros(length(data_csv), length(columns))
-    for i in 1:length(columns)
+    data = zeros(length(data_col[1]), length(data_col))
+    for i in 1:length(data_col)
         data[:, i] = data_col[i]
     end
     if norm
