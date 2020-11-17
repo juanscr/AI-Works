@@ -156,23 +156,79 @@ can be found in the authors'
 
 \subsection{Survey}
 The used survey for extracting data was initially designed for developing
-a Fuzzy inference expert system, but the data was labeled according to
+a Fuzzy Inference System, but the data was labeled according to
 unsupervised clustering techniques, obtaining 2 clusters through the subtractive
 algorithm \parencite{chiu1994} and then sharpened using Fuzzy-C-Means
-\parencite{dunn1973}. The data has 6 variables and 113 observations.
+\parencite{dunn1973}. The data has 6 variables and 113 observations. This
+dataset was divided with the standard $60-20-20$ rule, creating a training
+dataset with $60\%$ of the complete data, a validation set with $20\%$ and a
+test set with $20\%$ as well. All data was normalized by dividing each dimension
+by its maximum (in absolute value), casting the data into the [-1,1] hypercube.
 
 \subsection{Support Vector Machines}
-We refer to \textcite{burges1998} for the theoretical background on Support
-Vector Machines (SVMs).
+\textcite{burges1998} published an excellent reference for the theoretical
+background on SVMs with different kernels and explains the formulation of the
+optimization problem. The SVMs were used directly from Scikit-Learn
+\parencite{scikit-learn, sklearn_api} using
+\href{https://bit.ly/3lDHADX}{Julia's API}. The SVMs were trained using three
+different kernels: linear, polynomial and RBF (radial base function).
 
 \subsection{Decision Trees}
-We refer to
+We refer to \textcite{bramer2007} for the general ideas behind the decision tree
+classifier.
 
 \subsection{Neural Networks}
-We refer to \textcite{aggarwal2018} for the formulation of the Neural Netwok
-(NN) learning machine and the details of its implementation, such as the
-backpropagation algorithm for training and the bias correction. The NN was
-implemented by the authors, including the bias correction and the
+The book of \textcite{aggarwal2018} was used as primary reference for the
+formulation of the NN learning machine and the details of its implementation,
+such as the backpropagation algorithm and the bias correction.
+The NN was implemented by the authors, including the bias correction and the
+momentum acceleration term.
+
+The NNs trained used a fully-connected Multi-Layer Perceptron (MLP) using
+different number of neurons and different learning rates. The detailed process
+will be now described: let $L$ be the number of hidden layers in the MLP and let
+$\mathcal{L}\in\mathbb{R}^{L}$ be a vector containing the number of neurons on
+each hidden layer. The number of hidden layers was varied as $L=1,2,3$ and let
+$l_i$ be the number of neurons in the $i$-th layer of the MLP, hence, each
+$l_i\in\mathcal{L}$ was varied in $1,2,3$ as well. This gives a total of
+$3^1+3^2+3^3=39$ different permutations just for the architecture of the MLP,
+and this was repeated for learning rates as $\eta=0.2,0.5,0.9$, yielding a total
+of $117$ NNs to be trained.
+
+All $117$ MLPs were trained sequentially, fixing a maximum of 50 epochs,
+and only the main results for the two bests and for the worst MLP configurations
+will be presented, in order to keep this paper concrete. The order relation
+between the trained NNs was established by evaluating the cost function at the
+end of the final epoch. All MLPs used the sigmoid activation function.
+
+The results are presented using three learning curves: the sum of local
+gradients per layer at the end of each epoch, the average error energy and a
+Receiver Operating Characteristic (ROC) curve, comparing the obtained results
+with the real labels.
+\begin{itemize}
+  \item The sum of gradients per layer at the end of each epoch is an approach
+  visualizing if the training algorithm is solving the optimization problem,
+  since the sum of local gradients must converge to zero as each gradient
+  converges to zero. It is well-known that the vanish of gradients is a
+  necessary condition for optimality and the training algorithm is just an
+  optimization problem minimizing the output error (cost function).
+  \item The average error energy is the cost function of the optimization
+  problem. Let $y_i\in\mathbb{R}^n$ be the real output of a given input pattern
+  $x_i\in\mathbb{R}^m$ and let $\hat{y}_i\in\mathbb{R}^n$ be the output of the
+  NN for the same input pattern. Denoting each component by superscripts, the
+  average error energy $\xi_{av}$ on each epoch is then computed as
+  \begin{equation}
+    \xi_{av}=\dfrac{1}{2}\sum_{i=1}^{N}\sum_{k=1}^n\left(y^k_i-\hat{y}^k_i\right)^2,
+  \end{equation}
+  where $N$ is the training sample size. Thus, it is clear that
+  $\xi_{av}\rightarrow0$ as the training algorithm solves the learning problem
+  well.
+  \item The ROC curve is a tool that helps visualize the correct clasifications
+  of the learning machine by plotting the true positive rate on the vertical
+  axis, and false positive rate on the horizontal axis. The Area Under the Curve
+  (AUC) is an indicator of how good the data is being classified by the model,
+  with higher values being better usually better.
+\end{itemize}
 
 \section{Results}\label{sec:res}
 \subsection{Support Vector Machines}
@@ -256,7 +312,7 @@ implemented by the authors, including the bias correction and the
         \includegraphics[width=\textwidth]{figs/1-2-3-0.9-roc.pdf}
         \caption{ROC curve.}
     \end{subfigure}
-    \caption{Learning curves for 1-2-3 network.}
+    \caption{Learning curves for $\mathcal{L}=[1,2,3]$ network (worst).}
     \label{fig:NN-worst}
 \end{figure*}
 
@@ -277,7 +333,7 @@ implemented by the authors, including the bias correction and the
         \includegraphics[width=\textwidth]{figs/2-0.9-roc.pdf}
         \caption{ROC curve.}
     \end{subfigure}
-    \caption{Learning curves for 2 network.}
+    \caption{Learning curves for $\mathcal{L}=[2]$ network (2nd best).}
     \label{fig:NN-2best}
 \end{figure*}
 
@@ -298,7 +354,7 @@ implemented by the authors, including the bias correction and the
         \includegraphics[width=\textwidth]{figs/3-0.9-roc.pdf}
         \caption{ROC curve.}
     \end{subfigure}
-    \caption{Learning curves for 3 network.}
+    \caption{Learning curves for $\mathcal{L}=[3]$ network (best).}
     \label{fig:NN-best}
 \end{figure*}
 
