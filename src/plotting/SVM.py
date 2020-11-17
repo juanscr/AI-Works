@@ -15,9 +15,20 @@ save = lambda x: plt.savefig(dir_of_file(x), bbox_inches='tight')
 
 # ==== SVM ==== #
 class SVM:
-    def __init__(self, svm_joblib, feature_names):
+    def __init__(self, svm_joblib, feature_names, error_mat_name=""):
         self.svm = load(svm_joblib)
         self.feature_names = feature_names
+        self.error_mat = None
+        if error_mat_name:
+            self.read_error(error_mat_name)
+
+    def read_error(self, error_mat_name):
+        file0 = open(error_mat_name).readlines()[1:]
+
+        # Get matrix
+        str_mat = list(map(lambda x: x.split(","), file0))
+        self.error_mat = np.array(str_mat, dtype=float)
+        self.error_mat[:, [0, 1]] = self.error_mat[:, [1, 0]]
 
     def plotmemaybe(self, data_file, aux_prefix="", n=10):
         prefix = "svm-"
@@ -26,6 +37,22 @@ class SVM:
 
         # Plot information
         self.plot_contour(prefix + "contour-", data_file, n)
+        if self.error_mat is not None:
+            self.plot_error(prefix + "error.pdf", data_file)
+
+    def plot_error(self, name_file, data_file):
+        # Data
+        (train_datax, _), _, _ = create_data(data_file, "../data/indexes.csv")
+        m = train_datax.shape[0]
+
+        # Plotting
+        plt.plot(self.error_mat[:, 0], self.error_mat[:, 1], 'k')
+        plt.plot([m, m], [self.error_mat[:, 1].min()*0.5, self.error_mat[:, 1].max()*2], 'b--',
+                 lw=0.5)
+        plt.xlabel("$m$")
+        plt.ylabel("$\epsilon$")
+        save(name_file)
+        plt.clf()
 
 
     def plot_contour(self, name_file, data_file, n):
@@ -115,20 +142,27 @@ class SVM:
 
 # ==== SVM plotters ==== #
 kernels = ["linear", "poly", "rbf"]
+errors = {"linear": "../../results/svm-linear-eps.csv",
+          "poly": "../../results/svm-poly-eps.csv",
+          "rbf": ""}
 
 # High dimensional dataset
 svm_name = lambda x: "../../results/svm-" + x + ".joblib"
+features = ["Level of Attention", "Academic Perfomance",
+            "Emotional Socialization", "Depression", "Anxiety",
+            "Hyperactivity"]
+
 for kernel in kernels:
-    svm = SVM(svm_name(kernel), ["Level of Attention", "Academic Perfomance",
-                                 "Emotional Socialization", "Depression",
-                                 "Anxiety", "Hyperactivity"])
+    svm = SVM(svm_name(kernel), features, error_mat_name=errors[kernel])
     svm.plotmemaybe("../data/num-data.csv", n=4, aux_prefix=kernel)
 
 # Embedded dataset
 svm_name = lambda x: "../../results/svm-emb-" + x + ".joblib"
+errors = {"linear": "../../results/svm-emb-linear-eps.csv",
+          "poly": "../../results/svm-emb-poly-eps.csv",
+          "rbf": ""}
+
 for kernel in kernels:
-    svm = SVM(svm_name(kernel), ["Level of Attention", "Academic Perfomance",
-                                "Emotional Socialization", "Depression",
-                                "Anxiety", "Hyperactivity"])
+    svm = SVM(svm_name(kernel), ["X0", "X1"], error_mat_name=errors[kernel])
     svm.plotmemaybe("../data/embedded-data.csv", n=4,
                     aux_prefix="emb-" + kernel)
