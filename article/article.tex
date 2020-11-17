@@ -234,7 +234,13 @@ with the real labels.
 For giving an idea of the dataset treated in this work (visualization), the data
 was embedded into a 2-dimensional space using the T-student Stochastic
 Neighborhood Embedding (TSNE) \href{https://github.com/lejon/TSne.jl}{in Julia}
-\parencite{maaten2008}.
+\parencite{maaten2008}. In Fig. \ref{fig:emb_dat}, the embedded dataset is
+presented.
+\begin{figure}
+  \includegraphics[width=\columnwidth]{figs/embedded-data.pdf}
+  \caption{Embedded dataset.}
+  \label{fig:emb_dat}
+\end{figure}
 
 \subsection{Support Vector Machines}
 
@@ -317,7 +323,8 @@ Neighborhood Embedding (TSNE) \href{https://github.com/lejon/TSne.jl}{in Julia}
         \includegraphics[width=\textwidth]{figs/1-2-3-0.9-roc.pdf}
         \caption{ROC curve.}
     \end{subfigure}
-    \caption{Learning curves for $\mathcal{L}=[1,2,3]$ network (worst).}
+    \caption{Learning curves for $\mathcal{L}=[1,2,3]$ network $\eta=0.9$
+    (worst).}
     \label{fig:NN-worst}
 \end{figure*}
 
@@ -338,7 +345,8 @@ Neighborhood Embedding (TSNE) \href{https://github.com/lejon/TSne.jl}{in Julia}
         \includegraphics[width=\textwidth]{figs/2-0.9-roc.pdf}
         \caption{ROC curve.}
     \end{subfigure}
-    \caption{Learning curves for $\mathcal{L}=[2]$ network (2nd best).}
+    \caption{Learning curves for $\mathcal{L}=[2]$ network with $\eta=0.9$
+     (2nd best).}
     \label{fig:NN-2best}
 \end{figure*}
 
@@ -359,7 +367,8 @@ Neighborhood Embedding (TSNE) \href{https://github.com/lejon/TSne.jl}{in Julia}
         \includegraphics[width=\textwidth]{figs/3-0.9-roc.pdf}
         \caption{ROC curve.}
     \end{subfigure}
-    \caption{Learning curves for $\mathcal{L}=[3]$ network (best).}
+    \caption{Learning curves for $\mathcal{L}=[3]$ network with $\eta=0.9$
+    (best).}
     \label{fig:NN-best}
 \end{figure*}
 
@@ -370,8 +379,88 @@ Neighborhood Embedding (TSNE) \href{https://github.com/lejon/TSne.jl}{in Julia}
 \appendices
 
 \section{Results for Embedded Data}
+This section presents the same results above presented but for the data
+embedded with the TSNE algorithm prior to training.
+\subsection{Support Vector Machines}
 
+\subsection{Decision Tree}
+\begin{figure}
+    \includegraphics[width=\columnwidth]{figs/tree-emb-graph.pdf}
+    \caption{Decision tree.}
+    \label{fig:dte}
+\end{figure}
 
+\begin{figure}
+    \includegraphics[width=\columnwidth]{figs/tree-contour-0-1.pdf}
+    \caption{Decision Tree contour with real labels (embedded data).}
+    \label{fig:dte_cont}
+\end{figure}
 
+\subsection{Neural Networks}
+\begin{figure*}
+    \centering
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/2-3-3-0.9-emb-gradients.pdf}
+        \caption{Gradients for each layer.}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/2-3-3-0.9-emb-error.pdf}
+        \caption{Average error energy per epoch.}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/2-3-3-0.9-emb-roc.pdf}
+        \caption{ROC curve.}
+    \end{subfigure}
+    \caption{Learning curves for $\mathcal{L}=[2,3,3]$ network with $\eta=0.9$
+    (worst).}
+    \label{fig:NN-emb-worst}
+\end{figure*}
+
+\begin{figure*}
+    \centering
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/3-0.5-emb-gradients.pdf}
+        \caption{Gradients for each layer.}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/3-0.5-emb-error.pdf}
+        \caption{Average error energy per epoch.}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/3-0.5-emb-roc.pdf}
+        \caption{ROC curve.}
+    \end{subfigure}
+    \caption{Learning curves for $\mathcal{L}=[3]$ with $\eta=0.5$ network
+    (2nd best).}
+    \label{fig:NN-emb-2best}
+\end{figure*}
+
+\begin{figure*}
+    \centering
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/2-0.2-emb-gradients.pdf}
+        \caption{Gradients for each layer.}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/2-0.2-emb-error.pdf}
+        \caption{Average error energy per epoch.}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/2-0.2-emb-roc.pdf}
+        \caption{ROC curve.}
+    \end{subfigure}
+    \caption{Learning curves for $\mathcal{L}=[2]$ with $\eta=0.2$ network
+    (best).}
+    \label{fig:NN-emb-best}
+\end{figure*}
 
 \end{document}
