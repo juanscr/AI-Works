@@ -14,16 +14,14 @@ def purge(column):
 # Create data set
 def create_data(name_file, index_file, sep=True):
     data_csv = open(name_file).readlines()[1:]
-    data = np.zeros((len(data_csv), 7))
-    k = 0
+    data = []
     for row in data_csv:
-        data[k, :] = list(map(float, row.split(",")))
-        k += 1
+        data.append(row.split(","))
 
-    data = normalize(data)
+    data = normalize(np.array(data, dtype=float))
 
     if not sep:
-        return data[:, :6], data[:, 6:]
+        return data[:, :-1], data[:, -1:]
 
     # Separate data
     indexes_csv = open(index_file).readlines()[1:]
@@ -40,14 +38,14 @@ def create_data(name_file, index_file, sep=True):
     indexes_val = purge(indexes[:, 2])
 
     # Data creation
-    train_datax = data[indexes_tr, :6]
-    train_datay = data[indexes_tr, 6:]
+    train_datax = data[indexes_tr, :-1]
+    train_datay = data[indexes_tr, -1:]
 
-    test_datax = data[indexes_te, :6]
-    test_datay = data[indexes_te, 6:]
+    test_datax = data[indexes_te, :-1]
+    test_datay = data[indexes_te, -1:]
 
-    val_datax = data[indexes_val, :6]
-    val_datay = data[indexes_val, 6:]
+    val_datax = data[indexes_val, :-1]
+    val_datay = data[indexes_val, -1:]
 
     return (train_datax, train_datay), (test_datax, test_datay),\
            (val_datax, val_datay)
