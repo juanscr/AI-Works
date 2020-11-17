@@ -122,7 +122,7 @@ for kernel in kernels:
     svm = SVM(svm_name(kernel), ["Level of Attention", "Academic Perfomance",
                                  "Emotional Socialization", "Depression",
                                  "Anxiety", "Hyperactivity"])
-    svm.plotmemaybe("../data/num-data.csv", n=4)
+    svm.plotmemaybe("../data/num-data.csv", n=4, aux_prefix=kernel)
 
 # Embedded dataset
 svm_name = lambda x: "../../results/svm-emb-" + x + ".joblib"
@@ -130,4 +130,5 @@ for kernel in kernels:
     svm = SVM(svm_name(kernel), ["Level of Attention", "Academic Perfomance",
                                 "Emotional Socialization", "Depression",
                                 "Anxiety", "Hyperactivity"])
-    svm.plotmemaybe("../data/embedded-data.csv", n=4, aux_prefix="emb")
+    svm.plotmemaybe("../data/embedded-data.csv", n=4,
+                    aux_prefix="emb-" + kernel)
