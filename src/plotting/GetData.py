@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import matplotlib.pyplot as plt
 import numpy as np
 
 # Normalize data
@@ -59,3 +60,8 @@ def create_meshgrid(name_file):
         mesh[k, :] = list(map(float, row.split(",")))
         k += 1
     return mesh
+
+def plot_embedded_data(embedded_data_file):
+    datax, _ = create_data(embedded_data_file, "../data/indexes.csv", sep=False)
+    plt.scatter(datax[:, 0], datax[:, 1], color='k')
+    plt.savefig("../../article/figs/embedded-data.pdf")
