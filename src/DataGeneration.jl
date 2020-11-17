@@ -51,7 +51,6 @@ data = collect(transpose(hcat(data...)))
 
 # ============ Embedded Data ============ #
 data_emb = normalize(tsne(normalize(data)))
-CSV.write("data/embedded-data.csv", Tables.table(data_emb))
 
 # ============ Write new data ============ #
 function find_membership(data, dist, prototypes, args)
@@ -86,6 +85,8 @@ u, _ = find_membership(data, euclidean, protos, [])
 final_data = [data reshape(u[1, :], size(data, 1), 1)]
 CSV.write("data/num-data.csv", Tables.table(final_data))
 
+final_data_emb = [data_emb reshape(u[1, :], size(data, 1), 1)]
+CSV.write("data/embedded-data.csv", Tables.table(final_data_emb))
 
 # ============ Separate data ============ #
 indexes = 1:size(data, 1)
