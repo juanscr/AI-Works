@@ -50,18 +50,8 @@ end;
 data = collect(transpose(hcat(data...)))
 
 # ============ Embedded Data ============ #
-function plot_data(data)
-    scatter(data[:, 1], data[:, 2],
-            markersize = 5,
-            markerstrokewidth = 0,
-            label = false,
-            color = "black",
-            grid = false)
-end;
-
-data_emb = tsne(normalize(data))
-plot_data(data_emb)
-savefig("figs/embedded-data.pdf")
+data_emb = normalize(tsne(normalize(data)))
+CSV.write("data/embedded-data.csv", Tables.table(data_emb))
 
 # ============ Write new data ============ #
 function find_membership(data, dist, prototypes, args)
