@@ -338,8 +338,21 @@ with the real labels.
   of the learning machine by plotting the true positive rate on the vertical
   axis, and false positive rate on the horizontal axis. The Area Under the Curve
   (AUC) is an indicator of how good the data is being classified by the model,
-  with higher values being better usually better.
+  with higher values being usually better.
 \end{itemize}
+
+\subsection{Sensitivity-Specificity}
+The sensitivity is a ``measure of the proportion of actual positive cases that
+got predicted as postive (true positive)'' and the specificity is ``measure of
+proportion of actual negatives that got predicted as negatives (true negatives)
+'' \parencite{sens}. This values are, hence, calculated using the formulae
+\begin{align}
+  \mathrm{Sensitivity}=&\dfrac{TP}{TP+FN},\quad
+  \\\mathrm{Specificity} =&
+  \dfrac{TN}{TN+FP},
+\end{align}
+where TP stands for True Postives, FN for False Negatives, TN for True Negatives
+and FP for False Negatives, which are extracted from a confusion matrix.
 
 \section{Results}\label{sec:res}
 For giving an idea of the dataset treated in this work (visualization), the data
@@ -502,6 +515,21 @@ Validation & 1 & 1 \\ \hline
 \end{table}
 
 \section{Conclusions}\label{sec:conc}
+The results presented gave insight on how the two classes could be separated.
+The authors are keen on the idea that these shattered points could be mapped
+into a more intuitive interpretation of individuals requiring psychological
+attention (class 0) and others that show apparent ``normal'' conditions (class
+1). Note that this is pure speculation and would need confirmation by better
+qualified personnel.
+
+As for future work, the hypothesis and results here presented could be reviewed
+by an expert, since this work is preliminary and the authors are no experts in
+Mental Health. Additionally, a better review of sophisticated techniques for
+visualizing learning machines could be done, since the 2-dimensional embedding
+of the decision function (contours) was more of an heurisitc approach proposed
+by the authors and it could be somehow improved. Finally, the inclusion of more
+metrics for evaluating the performance of the classifiers can be included as
+well, since only the Sensitivity-Specificity was done.
 
 \printbibliography
 
