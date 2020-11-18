@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # ==== Global behavior ==== #
-from GetData import create_data
+from GetData import create_data, create_sens_spec
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -110,7 +110,19 @@ brains = Brain.read_brains("../../results/nn-results.csv")
 for brain in brains:
     brain.plotmemaybe()
 
+# Sensitivity and specificity
+outs = list(map(lambda x: x.out, brains))
+sep_info = list(map(lambda x: {"eta": x.eta, "ls": x.ls}, brains))
+create_sens_spec(outs, "../../results/nn-specs.csv", sep_info,
+                 "../data/num-data.csv", "../data/indexes.csv")
+
 # Data creation embedded
 brains = Brain.read_brains("../../results/nn-results-emb.csv")
 for brain in brains:
     brain.plotmemaybe("emb")
+
+# Sensitivity and specificity
+outs = list(map(lambda x: x.out, brains))
+sep_info = list(map(lambda x: {"eta": x.eta, "ls": x.ls}, brains))
+create_sens_spec(outs, "../../results/nn-emb-specs.csv", sep_info,
+                 "../data/num-data.csv", "../data/indexes.csv")
