@@ -4,7 +4,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from GetData import create_data, create_meshgrid
+from GetData import create_data, create_meshgrid, create_sens_spec
 from joblib import load
 from matplotlib import rc
 from sklearn.svm import SVC
@@ -47,8 +47,9 @@ class SVM:
 
         # Plotting
         plt.plot(self.error_mat[:, 0], self.error_mat[:, 1], 'k')
-        plt.plot([m, m], [self.error_mat[:, 1].min()*0.5, self.error_mat[:, 1].max()*2], 'b--',
-                 lw=0.5)
+        plt.plot([m, m], [self.error_mat[:, 1].min()*0.5,
+                          self.error_mat[:, 1].max()*2],
+                 'b--', lw=0.5)
         plt.xlabel("$m$")
         plt.ylabel("$\epsilon$")
         save(name_file)
@@ -145,24 +146,44 @@ kernels = ["linear", "poly", "rbf"]
 errors = {"linear": "../../results/svm-linear-eps.csv",
           "poly": "../../results/svm-poly-eps.csv",
           "rbf": ""}
+datax, _ = create_data("../data/num-data.csv", "../data/indexes.csv",
+                       sep=False)
 
-# High dimensional dataset
+### High dimensional dataset
 svm_name = lambda x: "../../results/svm-" + x + ".joblib"
 features = ["Level of Attention", "Academic Perfomance",
             "Emotional Socialization", "Depression", "Anxiety",
             "Hyperactivity"]
 
+svms = []
 for kernel in kernels:
     svm = SVM(svm_name(kernel), features, error_mat_name=errors[kernel])
     svm.plotmemaybe("../data/num-data.csv", n=4, aux_prefix=kernel)
+    svms.append(svm)
 
-# Embedded dataset
+# Specs
+outs = list(map(lambda x: SVC.decision_function(x.svm, datax), svms))
+sep_info = list(map(lambda x: {"Kernel": x}, kernels))
+create_sens_spec(outs, "../../results/svm-specs.csv", sep_info,
+                 "../data/num-data.csv", "../data/indexes.csv")
+
+### Embedded dataset
 svm_name = lambda x: "../../results/svm-emb-" + x + ".joblib"
 errors = {"linear": "../../results/svm-emb-linear-eps.csv",
           "poly": "../../results/svm-emb-poly-eps.csv",
           "rbf": ""}
 
+svms = []
 for kernel in kernels:
     svm = SVM(svm_name(kernel), ["X0", "X1"], error_mat_name=errors[kernel])
     svm.plotmemaybe("../data/embedded-data.csv", n=4,
                     aux_prefix="emb-" + kernel)
+    svms.append(svm)
+
+datax, _ = create_data("../data/embedded-data.csv", "../data/indexes.csv",
+                       sep=False)
+# Specs
+outs = list(map(lambda x: SVC.decision_function(x.svm, datax), svms))
+sep_info = list(map(lambda x: {"Kernel": x}, kernels))
+create_sens_spec(outs, "../../results/svm-emb-specs.csv", sep_info,
+                 "../data/embedded-data.csv", "../data/indexes.csv")
