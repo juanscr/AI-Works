@@ -471,7 +471,7 @@ $\mathcal{L}=3$ architecture.
   \label{fig:NN-best}
 \end{figure*}
 
-\begin{table}
+\begin{table}[H]
   \centering
   \caption{Performance scores for $\mathcal{L}=[1,2,3]$ and $\eta=0.9$.}
   \label{tab:L123}
@@ -484,7 +484,7 @@ $\mathcal{L}=3$ architecture.
   \end{tabular}
 \end{table}
 
-\begin{table}
+\begin{table}[H]
   \centering
   \caption{Performance scores for $\mathcal{L}=[2]$ and $\eta=0.9$.}
   \label{tab:L2}
@@ -497,7 +497,7 @@ $\mathcal{L}=3$ architecture.
   \end{tabular}
 \end{table}
 
-\begin{table}
+\begin{table}[H]
   \centering
   \caption{Performance scores for $\mathcal{L}=[3]$ and $\eta=0.9$.}
   \label{tab:L3}
@@ -518,6 +518,13 @@ attention (class 0) and others that show apparent ``normal'' conditions (class
 1). Note that this is pure speculation and would need confirmation by better
 qualified personnel.
 
+The machine that had the best performance was the Decision Tree, in comparison
+to the SVMs and the NNs. This happened because the other machines try to
+separate the data using all the given information, meanwhile the Decision Tree
+realizes that the other variables do not give any crucial data for separating.
+Furthermore, the variable ``Emotional Socialization'' is the most important for
+classifying data.
+
 As for future work, the hypothesis and results here presented could be reviewed
 by an expert, since this work is preliminary and the authors are no experts in
 Mental Health. Additionally, a better review of sophisticated techniques for
@@ -527,51 +534,53 @@ by the authors and it could be somehow improved. Finally, the inclusion of more
 metrics for evaluating the performance of the classifiers can be included as
 well, since only the Sensitivity-Specificity was done.
 
+\newpage
 \printbibliography
 
-\newpage
+\clearpage
 \appendices
 
 \section{Results for Embedded Data}\label{app:emb}
-This section presents the same results above presented but for the data
-embedded with the TSNE algorithm prior to training.
+This section presents the same results above presented but for the data embedded
+with the TSNE algorithm prior to training.
 
 \subsection{Support Vector Machines}
 The PAC learning, results using the same optimization-sensitivity methodology,
-are presented in Fig. \ref{fig:error-SVM-emb}
+are presented in Figs. \ref{fig:error-SVM-emb}, \ref{fig:error-SVM-emb2}.
 
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figs/svm-emb-linear-error.pdf}
-        \caption{Linear SVM.}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figs/svm-emb-poly-error.pdf}
-        \caption{Polynomial SVM}
-    \end{subfigure}
-    \caption{Estimated $\epsilon$ for different training set sizes.}
-    \label{fig:error-SVM-emb}
+\newpage
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\columnwidth]{figs/svm-emb-linear-error.pdf}
+  \caption{Estimated $\epsilon$ for different training set sizes (Linear SVM).}
+  \label{fig:error-SVM-emb}
 \end{figure}
 
-\begin{figure}
-  \includegraphics[width=\columnwidth]{figs/svm-emb-linear-contour-0-1.pdf}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\columnwidth]{figs/svm-emb-poly-error.pdf}
+  \caption{Estimated $\epsilon$ for different training set sizes (Poly SVM).}
+  \label{fig:error-SVM-emb2}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\columnwidth]{figs/svm-emb-linear-contour-0-1.pdf}
   \caption{Linear kernel SVM contour with real labels.}
 \end{figure}
 
-\begin{table}
-\centering
-\caption{Performance scores for linear SVM.}
-\label{tab:linear_SVM_emb}
-\begin{tabular}{ccc}
-\hline
-\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
-Training & 0 & 1 \\
-Testing & 0 & 1 \\
-Validation & 0 & 1 \\ \hline
-\end{tabular}
+\begin{table}[H]
+  \centering
+  \caption{Performance scores for linear SVM.}
+  \label{tab:linear_SVM_emb}
+  \begin{tabular}{ccc}
+    \hline
+    \textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+    Training & 0 & 1 \\
+    Testing & 0 & 1 \\
+    Validation & 0 & 1 \\ \hline
+  \end{tabular}
 \end{table}
 
 \begin{figure}
@@ -579,17 +588,17 @@ Validation & 0 & 1 \\ \hline
   \caption{Polynomial kernel SVM contour with real labels.}
 \end{figure}
 
-\begin{table}
-\centering
-\caption{Performance scores for polynomial SVM.}
-\label{tab:poly_SVM_emb}
-\begin{tabular}{ccc}
-\hline
-\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
-Training & 0 & 1 \\
-Testing & 0 & 1 \\
-Validation & 0 & 1 \\ \hline
-\end{tabular}
+\begin{table}[H]
+  \centering
+  \caption{Performance scores for polynomial SVM.}
+  \label{tab:poly_SVM_emb}
+  \begin{tabular}{ccc}
+    \hline
+    \textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+    Training & 0 & 1 \\
+    Testing & 0 & 1 \\
+    Validation & 0 & 1 \\ \hline
+  \end{tabular}
 \end{table}
 
 \begin{figure}
@@ -597,146 +606,138 @@ Validation & 0 & 1 \\ \hline
   \caption{RBF kernel SVM contour with real labels.}
 \end{figure}
 
-\begin{table}
-\centering
-\caption{Performance scores for polynomial RBF.}
-\label{tab:rbf_SVM_emb}
-\begin{tabular}{ccc}
-\hline
-\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
-Training & 0 & 1 \\
-Testing & 0 & 1 \\
-Validation & 0 & 1 \\ \hline
-\end{tabular}
+\begin{table}[H]
+  \centering
+  \caption{Performance scores for polynomial RBF.}
+  \label{tab:rbf_SVM_emb}
+  \begin{tabular}{ccc}
+    \hline
+    \textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+    Training & 0 & 1 \\
+    Testing & 0 & 1 \\
+    Validation & 0 & 1 \\ \hline
+  \end{tabular}
 \end{table}
 
 \subsection{Decision Tree}
 The estimated value of $\epsilon$ for the given training dataset size, taking
 $m=2$, a tree depth $k=5$ and a fixed $\delta=0.3$ is 0.5763.
 \begin{figure}
-    \includegraphics[width=\columnwidth]{figs/tree-emb-graph.pdf}
-    \caption{Decision tree.}
+  \includegraphics[width=\columnwidth]{figs/tree-emb-graph.pdf}
+  \caption{Decision tree.}
 \end{figure}
 
 \begin{figure}
-    \includegraphics[width=\columnwidth]{figs/tree-contour-0-1.pdf}
-    \caption{Decision Tree contour with real labels.}
+  \includegraphics[width=\columnwidth]{figs/tree-contour-0-1.pdf}
+  \caption{Decision Tree contour with real labels.}
 \end{figure}
 
-\begin{table}
-\centering
-\caption{Performance scores for DT.}
-\label{tab:DT_emb}
-\begin{tabular}{ccc}
-\hline
-\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
-Training & 1 & 1 \\
-Testing & 0 & 1 \\
-Validation & 0.63 & 0.94 \\ \hline
-\end{tabular}
+\begin{table}[H]
+  \centering
+  \caption{Performance scores for DT.}
+  \label{tab:DT_emb}
+  \begin{tabular}{ccc}
+    \hline
+    \textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+    Training & 1 & 1 \\
+    Testing & 0 & 1 \\
+    Validation & 0.63 & 0.94 \\ \hline
+  \end{tabular}
 \end{table}
 
 \subsection{Neural Networks}
 \begin{figure*}
+  \centering
+  \begin{subfigure}[b]{0.3\textwidth}
     \centering
-    \begin{subfigure}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figs/2-3-3-0.9-emb-gradients.pdf}
-        \caption{Gradients for each layer.}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figs/2-3-3-0.9-emb-error.pdf}
-        \caption{Average error energy per epoch.}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figs/2-3-3-0.9-emb-roc.pdf}
-        \caption{ROC curve.}
-    \end{subfigure}
-    \caption{Learning curves for $\mathcal{L}=[2,3,3]$ network with $\eta=0.9$
+    \includegraphics[width=\textwidth]{figs/2-3-3-0.9-emb-gradients.pdf}
+    \caption{Gradients for each layer.}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+    \centering \includegraphics[width=\textwidth]{figs/2-3-3-0.9-emb-error.pdf}
+    \caption{Average error energy per epoch.}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+    \centering \includegraphics[width=\textwidth]{figs/2-3-3-0.9-emb-roc.pdf}
+    \caption{ROC curve.}
+  \end{subfigure}
+  \caption{Learning curves for $\mathcal{L}=[2,3,3]$ network with $\eta=0.9$
     (worst).}
 \end{figure*}
 
 \begin{figure*}
-    \centering
-    \begin{subfigure}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figs/3-0.5-emb-gradients.pdf}
-        \caption{Gradients for each layer.}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figs/3-0.5-emb-error.pdf}
-        \caption{Average error energy per epoch.}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figs/3-0.5-emb-roc.pdf}
-        \caption{ROC curve.}
-    \end{subfigure}
-    \caption{Learning curves for $\mathcal{L}=[3]$ with $\eta=0.5$ network
-    (2nd best).}
+  \centering
+  \begin{subfigure}[b]{0.3\textwidth}
+    \centering \includegraphics[width=\textwidth]{figs/3-0.5-emb-gradients.pdf}
+    \caption{Gradients for each layer.}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+    \centering \includegraphics[width=\textwidth]{figs/3-0.5-emb-error.pdf}
+    \caption{Average error energy per epoch.}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+    \centering \includegraphics[width=\textwidth]{figs/3-0.5-emb-roc.pdf}
+    \caption{ROC curve.}
+  \end{subfigure}
+  \caption{Learning curves for $\mathcal{L}=[3]$ with $\eta=0.5$ network (2nd
+    best).}
 \end{figure*}
 
 \begin{figure*}
-    \centering
-    \begin{subfigure}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figs/2-0.2-emb-gradients.pdf}
-        \caption{Gradients for each layer.}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figs/2-0.2-emb-error.pdf}
-        \caption{Average error energy per epoch.}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{figs/2-0.2-emb-roc.pdf}
-        \caption{ROC curve.}
-    \end{subfigure}
-    \caption{Learning curves for $\mathcal{L}=[2]$ with $\eta=0.2$ network
+  \centering
+  \begin{subfigure}[b]{0.3\textwidth}
+    \centering \includegraphics[width=\textwidth]{figs/2-0.2-emb-gradients.pdf}
+    \caption{Gradients for each layer.}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+    \centering \includegraphics[width=\textwidth]{figs/2-0.2-emb-error.pdf}
+    \caption{Average error energy per epoch.}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.3\textwidth}
+    \centering \includegraphics[width=\textwidth]{figs/2-0.2-emb-roc.pdf}
+    \caption{ROC curve.}
+  \end{subfigure}
+  \caption{Learning curves for $\mathcal{L}=[2]$ with $\eta=0.2$ network
     (best).}
 \end{figure*}
 
-\begin{table}
-\centering
-\caption{Performance scores for $\mathcal{L}=[2]$ and $\eta=0.2$.}
-\label{tab:L2_emb}
-\begin{tabular}{ccc}
-\hline
-\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
-Training & $\times$ & 1 \\
-Testing & $\times$ & 1 \\
-Validation & $\times$ & 1 \\ \hline
-\end{tabular}
+\begin{table}[H]
+  \centering
+  \caption{Performance scores for $\mathcal{L}=[2]$ and $\eta=0.2$.}
+  \label{tab:L2_emb}
+  \begin{tabular}{ccc}
+    \hline
+    \textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+    Training & $\times$ & 1 \\
+    Testing & $\times$ & 1 \\
+    Validation & $\times$ & 1 \\ \hline
+  \end{tabular}
 \end{table}
 
-\begin{table}
-\centering
-\caption{Performance scores for $\mathcal{L}=[3]$ and $\eta=0.5$.}
-\label{tab:L3_emb}
-\begin{tabular}{ccc}
-\hline
-\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
-Training & $\times$ & 1 \\
-Testing & $\times$ & 1 \\
-Validation & $\times$ & 1 \\ \hline
-\end{tabular}
+\begin{table}[H]
+  \centering
+  \caption{Performance scores for $\mathcal{L}=[3]$ and $\eta=0.5$.}
+  \label{tab:L3_emb}
+  \begin{tabular}{ccc}
+    \hline
+    \textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+    Training & $\times$ & 1 \\
+    Testing & $\times$ & 1 \\
+    Validation & $\times$ & 1 \\ \hline
+  \end{tabular}
 \end{table}
 
-\begin{table}
-\centering
-\caption{Performance scores for $\mathcal{L}=[2,3,3]$ and $\eta=0.9$.}
-\label{tab:L233_emb}
-\begin{tabular}{ccc}
-\hline
-\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
-Training & 0 & 1 \\
-Testing & 0 & 1 \\
-Validation & 0 & 1 \\ \hline
-\end{tabular}
+\begin{table}[H]
+  \centering
+  \caption{Performance scores for $\mathcal{L}=[2,3,3]$ and $\eta=0.9$.}
+  \label{tab:L233_emb}
+  \begin{tabular}{ccc}
+    \hline
+    \textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+    Training & 0 & 1 \\
+    Testing & 0 & 1 \\
+    Validation & 0 & 1 \\ \hline
+  \end{tabular}
 \end{table}
 
 \end{document}
