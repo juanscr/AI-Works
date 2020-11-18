@@ -49,7 +49,7 @@
 %%%%%%%% START DOCUMENT
 \title{Supervised Learning for Psychological Attention to High School Students}
 
-\author{\IEEEauthorblockN{Juan S. Cárdenas-Rodríguez}
+\author{\IEEEauthorblockN{Juan Sebastián Cárdenas-Rodríguez}
   \IEEEauthorblockA{\textit{Department of Mathematical Sciences} \\
     \textit{EAFIT University}\\
     Medellín, Colombia \\
@@ -152,7 +152,8 @@ sets pillars for future works.
 \section{Methodology}\label{sec:meth}
 All the code developed for this work was implemented in Julia 1.5.3. and
 can be found in the authors'
-\href{https://github.com/juanscr/ai-works}{GitHub repository}.
+\href{https://github.com/juanscr/ai-works}{GitHub repository}, although the
+plots were generated using Python 3.8.6.
 
 \subsection{Survey}
 The used survey for extracting data was initially designed in the developing
@@ -284,7 +285,7 @@ given by
   \dfrac{1}{\delta}\right)\right],
 \end{equation}
 but again, the size of the dataset is fixed. Thus, $\epsilon$ was calculated by
-fixing the tree depth $k=4$ and setting $\delta=0.7$ yielding a value of
+fixing the tree depth $k=4$ and setting $\delta=0.3$ yielding a value of
 $\epsilon=0.5381$, which is a suitable value for the classifier error.
 
 \subsection{Neural Networks}
@@ -352,6 +353,10 @@ presented.
   \label{fig:emb_dat}
 \end{figure}
 
+The results in the following sections were obtained by using the 6-dimensional
+dataset. All the procedures were also applied to the embedded 2-dimensional
+data (via TSNE) but the results are presented in Appendix \ref{app:emb}.
+
 \subsection{Support Vector Machines}
 \input{inputs/svm}
 
@@ -359,27 +364,59 @@ presented.
 \input{inputs/dt}
 
 \subsection{Neural Networks}
+Recall that only the worst and 2 best NN are kept for presenting the results.
+The worst NN (in the sense of the objective function) was trained with
+$\eta=0.9$ and it has a $\mathcal{L}=[1,2,3]$ architecture in the hidden layers.
+The learning curves for this MLP are presented in Fig. \ref{fig:NN-worst}.
+This architecture is expected to perform poorly, at least for the given number
+of epochs, since it is attempting to summarize all 6 inputs in a one dimensional
+value for the first hidden layer and then casting this value into higher
+dimensions. It is unkown for the authors if this machine can learn the data at
+all, since the behavior of the backpropagation algorithm is unpredictable as
+epochs advance. Note from Fig. \ref{subfig:grad-worst-NN}, the gradients are
+stable in the epoch horizon defined, from Fig. \ref{subfig:error-worst-NN} that
+the average energy error seems to reach a stable point, but different from 0,
+finally, from Fig. \ref{subfig:roc-worst-NN}, the ROC curve and AUC confirms the
+poor performance of this classifier. Finally, the Sensitivity-Specificity
+results (see Table \ref{tab:L123}) show that this NN has adequate values for the
+specificity but deplorable values for the sensitivity.
+
 \begin{figure*}
     \centering
     \begin{subfigure}[b]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figs/1-2-3-0.9-gradients.pdf}
         \caption{Gradients for each layer.}
+        \label{subfig:grad-worst-NN}
     \end{subfigure}
     \begin{subfigure}[b]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figs/1-2-3-0.9-error.pdf}
         \caption{Average error energy per epoch.}
+        \label{subfig:error-worst-NN}
     \end{subfigure}
     \begin{subfigure}[b]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figs/1-2-3-0.9-roc.pdf}
         \caption{ROC curve.}
+        \label{subfig:roc-worst-NN}
     \end{subfigure}
     \caption{Learning curves for $\mathcal{L}=[1,2,3]$ network $\eta=0.9$
     (worst).}
     \label{fig:NN-worst}
 \end{figure*}
+
+Furthermore, the second-best NN was obtained with $\mathcal{L}=[2]$ and the best
+with $\mathcal{L}=[3]$, both trained with $\eta=0.9$. It is believed that this
+MLP obtained better results since the number of weights to optimize was
+relatively low and, hence, the backpropagation algorithm converges quickly
+(taking into consideration) the elevated learning rate. The training curves for
+these two models are presented respectively in Figs. \ref{fig:NN-2best} and
+\ref{fig:NN-best}. Note that both networks show rich dynamics on the gradients
+through the training stage, the average error energy seems to be descending into
+0 and both ROC curves are close to the perfect constant value of 1. The
+Sensitivity-Specificity values also show good results on all three sets for the
+$\mathcal{L}=3$ architecture.
 
 \begin{figure*}
     \centering
@@ -427,14 +464,14 @@ presented.
 
 \begin{table}
 \centering
-\caption{Performance scores for $\mathcal{L}=[3]$ and $\eta=0.9$.}
-\label{tab:L3}
+\caption{Performance scores for $\mathcal{L}=[1,2,3]$ and $\eta=0.9$.}
+\label{tab:L123}
 \begin{tabular}{ccc}
 \hline
 \textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
-Training & 0.5 & 1 \\
-Testing & $\times$ & 1 \\
-Validation & 1 & 1 \\ \hline
+Training & 0 & 1 \\
+Testing & 0 & 1 \\
+Validation & 0 & 1 \\ \hline
 \end{tabular}
 \end{table}
 
@@ -453,14 +490,14 @@ Validation & $\times$ & 1 \\ \hline
 
 \begin{table}
 \centering
-\caption{Performance scores for $\mathcal{L}=[1,2,3]$ and $\eta=0.9$.}
-\label{tab:L123}
+\caption{Performance scores for $\mathcal{L}=[3]$ and $\eta=0.9$.}
+\label{tab:L3}
 \begin{tabular}{ccc}
 \hline
 \textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
-Training & 0 & 1 \\
-Testing & 0 & 1 \\
-Validation & 0 & 1 \\ \hline
+Training & 0.5 & 1 \\
+Testing & $\times$ & 1 \\
+Validation & 1 & 1 \\ \hline
 \end{tabular}
 \end{table}
 
@@ -471,7 +508,7 @@ Validation & 0 & 1 \\ \hline
 \newpage
 \appendices
 
-\section{Results for Embedded Data}
+\section{Results for Embedded Data}\label{app:emb}
 This section presents the same results above presented but for the data
 embedded with the TSNE algorithm prior to training.
 
