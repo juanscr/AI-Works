@@ -243,6 +243,28 @@ samples in the training set to satisfy the PAC learning.
     \label{fig:error-SVM}
 \end{figure}
 
+Furthermore, it is important to notice that the dataset is 6-dimensional, which
+clearly brings problems for visualizing the learning machines' outputs and
+decision boundaries. In this paper, the decision functions of the fitted
+learning machines will be presented using contour plots of the projected data.
+This process will better described: each 6-dimensional pattern generates an
+output whenever it is evaluated in the fitted model. The idea is to generate an
+equally-spaced grid in $[-1,1]^6$ and evaluate each point on this model, in
+order to plot the contour of the shattering function. The main issue is that a
+direct projection into a 2-dimensional space of each point on the grid is not
+necessarily a function, since several points can have the same projection, but
+different values of the shattering function. In order to address this issue,
+the mean of the points that mapped into the same projection is taken, giving an
+proxy of the general behavior in high dimensions. This ``mean'' projection
+contour plots also include the projection of the training data points into the
+same coordinates and scattered with the real labels, giving an idea of the
+classification performance in high dimensions. Remark: as stated, the survey
+data also includes the outputs of the Fuzzy Inference System; thus, the countour
+plots are presented only for relating first input with the first input, second
+with the second output and so on. This was done aiming at two objectives:
+keeping a reasonable number of plots in the document, and giving a more
+intuitive interpretation to these plots.
+
 \subsection{Decision Trees}
 We refer to \textcite{bramer2007} for the general ideas behind the decision tree
 classifier. The DTs were used directly from Scikit-Learn
@@ -262,7 +284,8 @@ given by
   \dfrac{1}{\delta}\right)\right],
 \end{equation}
 but again, the size of the dataset is fixed. Thus, $\epsilon$ was calculated by
-fixing the tree depth $k$ and setting $\delta=0.7$.............
+fixing the tree depth $k=4$ and setting $\delta=0.7$ yielding a value of
+$\epsilon=0.5381$, which is a suitable value for the classifier error.
 
 \subsection{Neural Networks}
 The book of \textcite{aggarwal2018} was used as primary reference for the
@@ -451,7 +474,27 @@ Validation & 0 & 1 \\ \hline
 \section{Results for Embedded Data}
 This section presents the same results above presented but for the data
 embedded with the TSNE algorithm prior to training.
+
 \subsection{Support Vector Machines}
+The PAC learning, results using the same optimization-sensitivity methodology,
+are presented in Fig. \ref{fig:error-SVM-emb}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/svm-emb-linear-error.pdf}
+        \caption{Linear SVM.}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/svm-emb-poly-error.pdf}
+        \caption{Polynomial SVM}
+    \end{subfigure}
+    \caption{Estimated $\epsilon$ for different training set sizes.}
+    \label{fig:error-SVM-emb}
+\end{figure}
+
 \begin{figure}
   \includegraphics[width=\columnwidth]{figs/svm-emb-linear-contour-0-1.pdf}
   \caption{Linear kernel SVM contour with real labels.}
@@ -507,6 +550,8 @@ Validation & 0 & 1 \\ \hline
 \end{table}
 
 \subsection{Decision Tree}
+The estimated value of $\epsilon$ for the given training dataset size, taking
+$m=2$, a tree depth $k=5$ and a fixed $\delta=0.3$ is 0.5763.
 \begin{figure}
     \includegraphics[width=\columnwidth]{figs/tree-emb-graph.pdf}
     \caption{Decision tree.}
@@ -521,9 +566,9 @@ Validation & 0 & 1 \\ \hline
 \centering
 \caption{Performance scores for DT.}
 \label{tab:DT_emb}
-\begin{tabular}{cll}
+\begin{tabular}{ccc}
 \hline
-\textbf{Set} & \multicolumn{1}{c}{\textbf{Sensitivity}} & \multicolumn{1}{c}{\textbf{Specificity}} \\ \hline
+\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
 Training & 1 & 1 \\
 Testing & 0 & 1 \\
 Validation & 0.63 & 0.94 \\ \hline
