@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sklearn.tree as tree
 
-from GetData import create_data, create_meshgrid
+from GetData import create_data, create_meshgrid, create_sens_spec
 from joblib import load
 from matplotlib import rc
 
@@ -133,6 +133,22 @@ dt = Tree("../../results/tree.joblib", ["Level of Attention", "Academic Perfoman
                                         "Anxiety", "Hyperactivity"], ["0", "1"])
 dt.plotmemaybe("../data/num-data.csv", n=4)
 
+# Print specs
+datax, _ = create_data("../data/num-data.csv", "../data/indexes.csv",
+                       sep=False)
+outs = [tree.DecisionTreeClassifier.predict_proba(dt.tree, datax)[:, 1]]
+sep_info = [{}]
+create_sens_spec(outs, "../../results/tree-specs.csv", sep_info,
+                 "../data/num-data.csv", "../data/indexes.csv")
+
 # Embedded dataset
 dte = Tree("../../results/tree-emb.joblib", ["X0", "X1"], ["0", "1"])
 dte.plotmemaybe("../data/embedded-data.csv", n=4, aux_prefix="emb")
+
+# Print specs
+datax, _ = create_data("../data/embedded-data.csv", "../data/indexes.csv",
+                       sep=False)
+outs = [tree.DecisionTreeClassifier.predict_proba(dte.tree, datax)[:, 1]]
+sep_info = [{}]
+create_sens_spec(outs, "../../results/tree-emb-specs.csv", sep_info,
+                 "../data/embedded-data.csv", "../data/indexes.csv")
