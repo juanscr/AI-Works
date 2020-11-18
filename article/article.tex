@@ -261,7 +261,8 @@ given by
   N\geq \dfrac{\ln(2)}{2\epsilon^2}\left[(2^k-1)(1+\log_2 m) + 1 + \ln\left(
   \dfrac{1}{\delta}\right)\right],
 \end{equation}
-but again, the size of the dataset is fixed,
+but again, the size of the dataset is fixed. Thus, $\epsilon$ was calculated by
+fixing the tree depth $k$ and setting $\delta=0.7$.............
 
 \subsection{Neural Networks}
 The book of \textcite{aggarwal2018} was used as primary reference for the
@@ -488,6 +489,45 @@ presented.
     \label{fig:SVM-rbf}
 \end{figure*}
 
+\begin{table}
+\centering
+\caption{Performance scores for linear SVM.}
+\label{tab:linear_SVM}
+\begin{tabular}{ccc}
+\hline
+\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+Training & 0 & 1 \\
+Testing & 0 & 1 \\
+Validation & 0 & 1 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{Performance scores for polynomial SVM.}
+\label{tab:poly_SVM}
+\begin{tabular}{cll}
+\hline
+\textbf{Set} & \multicolumn{1}{c}{\textbf{Sensitivity}} & \multicolumn{1}{c}{\textbf{Specificity}} \\ \hline
+Training & 0.89 & 1 \\
+Testing & 0 & 1 \\
+Validation & 0.57 & 1 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{Performance scores for RBF SVM.}
+\label{tab:rbf_SVM}
+\begin{tabular}{cll}
+\hline
+\textbf{Set} & \multicolumn{1}{c}{\textbf{Sensitivity}} & \multicolumn{1}{c}{\textbf{Specificity}} \\ \hline
+Training & 0.13 & 1 \\
+Testing & 0 & 1 \\
+Validation & 0.25 & 1 \\ \hline
+\end{tabular}
+\end{table}
+
 \subsection{Decision Trees}
 \begin{figure}
     \includegraphics[width=\columnwidth]{figs/tree-graph.pdf}
@@ -548,6 +588,18 @@ presented.
     \label{fig:dts}
 \end{figure*}
 
+\begin{table}
+\centering
+\caption{Performance scores for DT.}
+\label{tab:DT}
+\begin{tabular}{ccc}
+\hline
+\textbf{Set} & \multicolumn{1}{c}{\textbf{Sensitivity}} & \multicolumn{1}{c}{\textbf{Specificity}} \\ \hline
+Training & 1 & 1 \\
+Testing & 0.5 & 1 \\
+Validation & 0.75 & 1 \\ \hline
+\end{tabular}
+\end{table}
 
 \subsection{Neural Networks}
 \begin{figure*}
@@ -616,6 +668,45 @@ presented.
     \label{fig:NN-best}
 \end{figure*}
 
+\begin{table}
+\centering
+\caption{Performance scores for $\mathcal{L}=[3]$ and $\eta=0.9$.}
+\label{tab:L3}
+\begin{tabular}{ccc}
+\hline
+\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+Training & 0.5 & 1 \\
+Testing & $\times$ & 1 \\
+Validation & 1 & 1 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{Performance scores for $\mathcal{L}=[2]$ and $\eta=0.9$.}
+\label{tab:L2}
+\begin{tabular}{ccc}
+\hline
+\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+Training & $\times$ & 1 \\
+Testing & $\times$ & 1 \\
+Validation & $\times$ & 1 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{Performance scores for $\mathcal{L}=[1,2,3]$ and $\eta=0.9$.}
+\label{tab:L123}
+\begin{tabular}{ccc}
+\hline
+\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+Training & 0 & 1 \\
+Testing & 0 & 1 \\
+Validation & 0 & 1 \\ \hline
+\end{tabular}
+\end{table}
+
 \section{Conclusions}\label{sec:conc}
 
 \printbibliography
@@ -631,15 +722,54 @@ embedded with the TSNE algorithm prior to training.
   \caption{Linear kernel SVM contour with real labels.}
 \end{figure}
 
+\begin{table}
+\centering
+\caption{Performance scores for linear SVM.}
+\label{tab:linear_SVM_emb}
+\begin{tabular}{ccc}
+\hline
+\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+Training & 0 & 1 \\
+Testing & 0 & 1 \\
+Validation & 0 & 1 \\ \hline
+\end{tabular}
+\end{table}
+
 \begin{figure}
   \includegraphics[width=\columnwidth]{figs/svm-emb-poly-contour-0-1.pdf}
   \caption{Polynomial kernel SVM contour with real labels.}
 \end{figure}
 
+\begin{table}
+\centering
+\caption{Performance scores for polynomial SVM.}
+\label{tab:poly_SVM_emb}
+\begin{tabular}{ccc}
+\hline
+\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+Training & 0 & 1 \\
+Testing & 0 & 1 \\
+Validation & 0 & 1 \\ \hline
+\end{tabular}
+\end{table}
+
 \begin{figure}
   \includegraphics[width=\columnwidth]{figs/svm-emb-rbf-contour-0-1.pdf}
   \caption{RBF kernel SVM contour with real labels.}
 \end{figure}
+
+\begin{table}
+\centering
+\caption{Performance scores for polynomial RBF.}
+\label{tab:rbf_SVM_emb}
+\begin{tabular}{ccc}
+\hline
+\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+Training & 0 & 1 \\
+Testing & 0 & 1 \\
+Validation & 0 & 1 \\ \hline
+\end{tabular}
+\end{table}
 
 \subsection{Decision Tree}
 \begin{figure}
@@ -651,6 +781,19 @@ embedded with the TSNE algorithm prior to training.
     \includegraphics[width=\columnwidth]{figs/tree-contour-0-1.pdf}
     \caption{Decision Tree contour with real labels.}
 \end{figure}
+
+\begin{table}
+\centering
+\caption{Performance scores for DT.}
+\label{tab:DT_emb}
+\begin{tabular}{cll}
+\hline
+\textbf{Set} & \multicolumn{1}{c}{\textbf{Sensitivity}} & \multicolumn{1}{c}{\textbf{Specificity}} \\ \hline
+Training & 1 & 1 \\
+Testing & 0 & 1 \\
+Validation & 0.63 & 0.94 \\ \hline
+\end{tabular}
+\end{table}
 
 \subsection{Neural Networks}
 \begin{figure*}
@@ -715,5 +858,44 @@ embedded with the TSNE algorithm prior to training.
     \caption{Learning curves for $\mathcal{L}=[2]$ with $\eta=0.2$ network
     (best).}
 \end{figure*}
+
+\begin{table}
+\centering
+\caption{Performance scores for $\mathcal{L}=[2]$ and $\eta=0.2$.}
+\label{tab:L2_emb}
+\begin{tabular}{ccc}
+\hline
+\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+Training & $\times$ & 1 \\
+Testing & $\times$ & 1 \\
+Validation & $\times$ & 1 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{Performance scores for $\mathcal{L}=[3]$ and $\eta=0.5$.}
+\label{tab:L3_emb}
+\begin{tabular}{ccc}
+\hline
+\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+Training & $\times$ & 1 \\
+Testing & $\times$ & 1 \\
+Validation & $\times$ & 1 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption{Performance scores for $\mathcal{L}=[2,3,3]$ and $\eta=0.9$.}
+\label{tab:L233_emb}
+\begin{tabular}{ccc}
+\hline
+\textbf{Set} & \textbf{Sensitivity} & \textbf{Specificity} \\ \hline
+Training & 0 & 1 \\
+Testing & 0 & 1 \\
+Validation & 0 & 1 \\ \hline
+\end{tabular}
+\end{table}
 
 \end{document}
