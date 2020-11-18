@@ -1,0 +1,15 @@
+eta,0.2
+ls,[2]
+Training,Error,1.0
+Testing,Error,1.0
+Validation,Error,1.0
+eta,0.5
+ls,[3]
+Training,Error,1.0
+Testing,Error,1.0
+Validation,Error,1.0
+eta,0.9
+ls,[2, 3, 3]
+Training,0.0,1.0
+Testing,0.0,1.0
+Validation,0.0,1.0
