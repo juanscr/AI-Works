@@ -1,0 +1,12 @@
+Kernel,linear
+Training,0.0,1.0
+Testing,0.0,1.0
+Validation,0.0,1.0
+Kernel,poly
+Training,0.8888888888888888,1.0
+Testing,0.0,1.0
+Validation,0.5714285714285714,1.0
+Kernel,rbf
+Training,0.125,1.0
+Testing,0.0,1.0
+Validation,0.25,1.0
