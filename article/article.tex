@@ -134,14 +134,14 @@ and beyond. This paper includes a systematic review of over three hundred papers
 and it concludes that these techniques have brought benefits
 across the areas of diagnosis, treatment, research and clinical administration.
 
-Finally, another overview of applications of Artificial Intelligence (AI) for Mental
-Illnesses is the research published by \textcite{graham2019}, where the authors
-reviewed 28 research papers which include modern methodologies (and
+Finally, another overview of applications of Artificial Intelligence (AI) for
+Mental Illnesses is the research published by \textcite{graham2019}, where the
+authors reviewed 28 research papers which include modern methodologies (and
 technologies) for predicting or classifying psychological illnesses such as
 depression, schizophrenia or suicidal behavior. The study discusses how the
-application of AI techniques supports the clinical practice while considering its
-limitations, it also presents some ethical implications and states which areas need
-further development.
+application of AI techniques supports the clinical practice while considering
+its limitations, it also presents some ethical implications and states which
+areas need further development.
 
 This document is organized as
 follows: Section \ref{sec:meth} shows the general methodology used in this work,
@@ -155,7 +155,7 @@ can be found in the authors'
 \href{https://github.com/juanscr/ai-works}{GitHub repository}.
 
 \subsection{Survey}
-The used survey for extracting data was initially designed for developing
+The used survey for extracting data was initially designed in the developing
 a Fuzzy Inference System, but the data was labeled according to
 unsupervised clustering techniques, obtaining 2 clusters through the subtractive
 algorithm \parencite{chiu1994} and then sharpened using Fuzzy-C-Means
@@ -165,6 +165,10 @@ dataset with $60\%$ of the complete data, a validation set with $20\%$ and a
 test set with $20\%$ as well. All data was normalized by dividing each dimension
 by its maximum (in absolute value), casting the data into the [-1,1] hypercube.
 
+Remark: the dataset includes both inputs (first three variables) and outputs
+(last three variables) of the Fuzzy Inference System. This will be later
+useful to organize relationships in the variables for more intuitive plots.
+
 \subsection{Support Vector Machines}
 \textcite{burges1998} published an excellent reference for the theoretical
 background on SVMs with different kernels and explains the formulation of the
@@ -173,9 +177,91 @@ optimization problem. The SVMs were used directly from Scikit-Learn
 \href{https://bit.ly/3lDHADX}{Julia's API}. The SVMs were trained using three
 different kernels: linear, polynomial and RBF (radial base function).
 
+Given that the sample size is fixed, the analysis for the ``Probably
+Approximately Correct'' (PAC) learning was not straight-forward, as the
+classifier's maximum permited error $\epsilon$ was estimated from the classic
+formulae, rather than calculating the adequate sample size for a given $\delta$.
+
+The PAC learning here applied is based on the ideas presented in
+\parencite{kubat2017}. Let $N$ be number of samples in the training set,
+$\epsilon$ is the classifier maximum permited error rate, $\delta$ is the
+probability that a classifier with error rate greater than $\epsilon$ is
+\text{error-free} on the training set, $m$ be the dimension of each training
+patttern, and let $VC$ be the Vapnik-Chervonenkis dimension of the given
+classifier. Hence, for learning in continuous domains, the lower bound for
+$N$ is
+
+\begin{equation}
+N\geq \max\left\{ \dfrac{4}{\epsilon}\ln\left(\dfrac{2}{\delta}\right),
+\dfrac{8\mathrm{VC}}{\epsilon}\ln\left(\dfrac{13}{\epsilon}\right) \right\}.
+\end{equation}
+
+It is clear that solving for $\epsilon$ is non-trivial for given values of
+$\delta$, $N$ and $\mathrm{VC}$; thus, an optimization approach was used to
+estimate $\epsilon$ for the input values, solving the nonlinear optimization
+problem
+
+\begin{equation}
+\begin{split}
+\min_{\epsilon\in\mathbb{R}_+}\ &J=\,\epsilon^2\\
+\mathrm{s.t.}\ &\dfrac{4}{\epsilon}\ln\left(\dfrac{2}{\delta} \right)\leq N\\
+\quad&\dfrac{8\mathrm{VC}}{\epsilon}\ln\left(\dfrac{13}{\epsilon}\right)\leq N.
+\end{split}
+\end{equation}
+
+The problem was initially constrained to $\epsilon\in[0,1]$, but it had not
+feasible solution for the size of the training set, yielding values of
+$\epsilon$ greater than 1. Instead, the constrained was removed and a
+sensitivity analysis was made for the training set size, varying the latter to
+find a suitable value for $\epsilon$. The size of training set was varied in
+$(0.8N, 10N)$ for each kernel SVM and the estimated $\epsilon$ are presented
+in Fig. \ref{fig:error-SVM}, with a fixed $\delta$. Note that $\mathrm{VC}=7$
+for the linear SVM, since
+$m=6$, and $\mathrm{VC}=84$ for the polynomial SVM, since cubic polynomials were
+selected; furthermore, the VC dimension for the RBF SVM is infinite and this
+case was not included (see \parencite{burges1998}).
+
+Note that $\epsilon$ in the linear SVM enters the feasible value for training
+sets above 150 samples and stabilizing around $\epsilon=0.3$ for large training
+set samples value. In contrast, $\epsilon$ for the polynomial SVM never reaches
+a suitable value below 1, indicating that this classifier requires more than 600
+samples in the training set to satisfy the PAC learning.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/svm-linear-error.pdf}
+        \caption{Linear SVM.}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figs/svm-poly-error.pdf}
+        \caption{Polynomial SVM}
+    \end{subfigure}
+    \caption{Estimated $\epsilon$ for different training set sizes.}
+    \label{fig:error-SVM}
+\end{figure}
+
 \subsection{Decision Trees}
 We refer to \textcite{bramer2007} for the general ideas behind the decision tree
-classifier.
+classifier. The DTs were used directly from Scikit-Learn
+\parencite{scikit-learn, sklearn_api} using
+\href{https://bit.ly/3lDHADX}{Julia's API}. The DT were trained using all
+default parameters in the suite, but using the ``entropy'' (information gain)
+criterion for measuring the quality of splits.
+
+The same idea from the SVM classifiers for plotting the countour of the decision
+boundaries of the fitted model was used, plotting the training dataset with the
+real labels and the contour for the decision function.
+
+Additionally, it is well-known that the bound for the training dataset size is
+given by
+\begin{equation}
+  N\geq \dfrac{\ln(2)}{2\epsilon^2}\left[(2^k-1)(1+\log_2 m) + 1 + \ln\left(
+  \dfrac{1}{\delta}\right)\right],
+\end{equation}
+but again, the size of the dataset is fixed,
 
 \subsection{Neural Networks}
 The book of \textcite{aggarwal2018} was used as primary reference for the
@@ -217,12 +303,12 @@ with the real labels.
   $x_i\in\mathbb{R}^m$ and let $\hat{y}_i\in\mathbb{R}^n$ be the output of the
   NN for the same input pattern. Denoting each component by superscripts, the
   average error energy $\xi_{av}$ on each epoch is then computed as
-  \begin{equation}
-    \xi_{av}=\dfrac{1}{2}\sum_{i=1}^{N}\sum_{k=1}^n\left(y^k_i-\hat{y}^k_i\right)^2,
-  \end{equation}
+\begin{equation}
+\xi_{av}=\dfrac{1}{2}\sum_{i=1}^{N}\sum_{k=1}^n\left(y^k_i-\hat{y}^k_i\right)^2,
+\end{equation}
   where $N$ is the training sample size. Thus, it is clear that
-  $\xi_{av}\rightarrow0$ as the training algorithm solves the learning problem
-  well.
+  $\xi_{av}\rightarrow0$ is a good initial approach for evaluating the
+  learning performance.
   \item The ROC curve is a tool that helps visualize the correct classifications
   of the learning machine by plotting the true positive rate on the vertical
   axis, and false positive rate on the horizontal axis. The Area Under the Curve
