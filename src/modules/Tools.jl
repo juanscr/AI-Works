@@ -14,7 +14,8 @@ function purge(indexes :: Vector{Int64})
 end
 
 # Get data
-function create_data(name_file :: String; sep = true, norm = true)
+function create_data(name_file :: String; sep = true, norm = true,
+                     indexes_file="data/indexes.csv")
     # Data reading
     data_col = CSV.File(name_file).columns
     data = zeros(length(data_col[1]), length(data_col))
@@ -30,7 +31,7 @@ function create_data(name_file :: String; sep = true, norm = true)
     end
 
     # Separate data
-    indexes_csv = CSV.File("data/indexes.csv")
+    indexes_csv = CSV.File(indexes_file)
     indexes_tr = trunc.(Int, indexes_csv.columns[1])
     indexes_te = purge(trunc.(Int, indexes_csv.columns[2]))
     indexes_val = purge(trunc.(Int, indexes_csv.columns[3]))
