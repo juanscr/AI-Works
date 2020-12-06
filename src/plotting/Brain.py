@@ -87,7 +87,7 @@ class Brain:
         plt.clf()
 
     def plot_roc(self, name_file):
-        datax, datay = create_data("../data/num-data.csv", "../data/indexes.csv",
+        _, datay = create_data("../data/num-data.csv", "../data/indexes.csv",
                                    sep=False)
         datay = np.resize(datay, datay.shape[0])
 
