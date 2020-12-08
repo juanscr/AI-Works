@@ -13,6 +13,7 @@ _*
 *.bbl
 *.bcf
 *.blg
+*.bson
 *.class
 *.dvi
 .DS_Store
