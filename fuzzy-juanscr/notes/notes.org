@@ -1,0 +1,203 @@
+#+TITLE: Fuzzy Inference System for Psychological Attention
+#+STARTUP: latexpreview
+#+STARTUP: entitiespretty
+
+This notes are for my project of the Artificial Intelligence subject of
+Universidad EAFIT.
+
+Lastly updated August 20, 2020.
+
+* Mathematical Model
+The model will be implemented in =julia 1.4.2=, with a personal fork of the
+=Fuzzy= package. This fork can be founded in [[https://github.com/juanscr/Fuzzy.jl][juanscr's github.]] After installing
+it, just
+#+begin_src julia
+using Fuzzy
+#+end_src
+
+** Input Variables
+There are three input variables.
+- The /level of attention/ (ATT) in class is the level of attention of a
+  student. This will help measure the attention that a student has in class and
+  therefore have a measurement about their mental status. The level of attention
+  is measured between $\mathrm{ATT} \in [0, 5]$. The membership functions are
+#+begin_src julia
+input_att = Dict{String, Fuzzy.MF}("Low" => SigmoidMF(-5, 1.7, 0), "Average" => GaussianMF(2.5, 0.7), "High" => SigmoidMF(5, 3.3, 5))
+#+end_src
+Each function plotted can be seen in the following image:
+
+[[./figs/att.png]]
+
+- The /academic performance/ (AP) is the measurement of the notes that the
+  student has. This is measured by the average of all their notes, therefore it
+  is measured between $\mathrm{AP} \in [0, 5]$. The memberships functions are
+#+begin_src julia
+input_ap = Dict{String, Fuzzy.MF}("Low" => BellMF(1.5, 4, 0), "Average" => GaussianMF(3, 0.7), "High" => BellMF(1, 4, 5))
+#+end_src
+Each function plotted can be seen in the following image:
+
+[[./figs/ap.png]]
+
+- The /emotional socialization/ (ES) is the measurement of how the student
+  shares his negative emotions with those who surround them. There are several
+  indicators to measure this variable, as seen in [2]. Therefore, the selected
+  measurement was the one done by Fabes [1], which can evaluate negative
+  emotional socialization. This variable is measured between $\mathrm{ES} \in
+  [-252, 252]$. The membership functions are:
+#+begin_src julia
+input_es = Dict{String, Fuzzy.MF}("Low Distress" => SigmoidMF(-0.05, -126, -252), "Mean Distress" => GaussianMF(0, 70), "High Distress" => SigmoidMF(0.05, 126, 252))
+#+end_src
+Each function plotted can be seen in the following image:
+
+[[./figs/es.png]]
+
+** Output Variables
+The output variables are the level of /depression/, /anxiety/ and
+/hyperactivity/. This where selected based on [3] and [4] which show the
+importance of measuring this variables in students to prevent several causes.
+Each level will be measured between $[0, 100]$ so the output of the system is a
+percentage resembling the level of each output.
+
+All the outputs have the same categories and functions. This are given by:
+
+** Rules
+If the ATT is low *and* AP is low *and* ES is low then
+- /depression/ is high.
+- /anxiety/ is high.
+- /hyperactivity/ is high.
+
+If the ATT is low *and* AP is low *and* ES is medium then
+- /depression/ is high.
+- /anxiety/ is low.
+- /hyperactivity/ is high.
+
+If the ATT is low *and* AP is low *and* ES is high then
+- /depression/ is low.
+- /anxiety/ is low.
+- /hyperactivity/ is high.
+
+If the ATT is low *and* the AP is medium *and* ES is low then
+- /depression/ is high.
+- /anxiety/ is low.
+- /hyperactivity/ is high.
+
+If the ATT is low *and* the AP is medium *and* ES is medium then
+- /depression/ is low.
+- /anxiety/ is low.
+- /hyperactivity/ is high.
+
+If the ATT is low *and* the AP is high *and* ES is low then
+- /depression/ is high.
+- /anxiety/ is low.
+- /hyperactivity/ is high.
+
+If the ATT is low *and* AP is not high *and* ES is low then
+- /depression/ is high.
+- /anxiety/ is high.
+- /hyperactivity/ is low.
+
+If the ATT is medium *and* AP is low *and* ES is low then
+- /depression/ is high.
+- /anxiety/ is low.
+- /hyperactivity/ is low.
+
+If the ATT is high *and* the AP is low *and* ES is medium then
+- /depression/ is low.
+- /anxiety/ is low.
+- /hyperactivity/ is high.
+
+If the ATT is high *and* the AP is low *and* ES is low then
+- /depression/ is high.
+- /anxiety/ is low.
+- /hyperactivity/ is low.
+
+If the ATT is high *and* the AP is high *and* the ES is not low then
+- /depression/ is low.
+- /anxiety/ is high.
+- /hyperactivity/ is low.
+
+If the ATT is high *and* the AP is high *and* the ES is high then
+- /depression/ is low.
+- /anxiety/ is low.
+- /hyperactivity/ is low.
+
+If the ATT is high *and* the AP is not low *and* the ES is high then
+- /depression/ is low.
+- /anxiety/ is low.
+- /hyperactivity/ is low.
+
+The rules are read by a function from this file. The function is
+#+begin_src julia
+function read_rules(number_of_outputs :: Int64)
+    # Open org mode file
+    file = read(open("../notes/notes.org", "r"), String)
+    file_sp = split(file, "**")
+
+    # Find string with rules
+    rules_s = Nothing
+    for section in file_sp
+        if section[2:6] == "Rules"
+            rules_s = section
+            break
+        end
+    end
+
+    # Separate all rules
+    rules = split(replace(rules_s, " Rules\n" => ""), "\n\n")
+
+    # Create output list
+    outputs = []
+    for i in 1:number_of_outputs
+        push!(outputs, [])
+    end
+
+    # Process each rule
+    possibilities = r"(not )?(low|medium|high)"
+    for rule in rules
+        if (rule[1:2] != "If")
+            return outputs
+        end
+        inputs = []
+
+        aux = split(rule, " is ")
+        for i in 2:(length(aux) - number_of_outputs)
+            match0 = match(possibilities, aux[i]).match
+            if match0 == "low"
+                match0 = "Low"
+            elseif match0 == "medium"
+                match0 = "Average"
+            else
+                match0 = "High"
+            end
+            push!(inputs, match0)
+        end
+
+        for i in (length(aux) - number_of_outputs + 1):length(aux)
+            match0 = match(possibilities, aux[i]).match
+            if match0 == "low"
+                match0 = "Low"
+            elseif match0 == "medium"
+                match0 = "Average"
+            else
+                match0 = "High"
+            end
+            push!(outputs[i + number_of_outputs - length(aux)], Rule(inputs, match0))
+        end
+    end
+
+    return outputs
+end
+#+end_src
+
+* References
+1. Fabes, Richard A., Stacie A. Leonard, Kristina Kupanoff, and Carol Lynn
+   Martin. "Parental Coping with Children's Negative Emotions: Relations with
+   Children's Emotional and Social Responding." Child Development 72, no. 3
+   (2001): 907-920.2.
+2. Horner, Christy G., and Tanner L. Wallace. "Measuring Emotion Socialization
+   in Schools." Journal of School Health 83, no. 10 (2013): 697-703.
+3. Jabeen, S. H., M. E. Sandhu, F. Tahir, M. Amadullah, and N. Noureen.
+   "Cognitive Behavioural Therapy to Compute Psychological Illness of Students
+   by Using an Expert System." J Depress Anxiety 7, no. 315 (2018): 2167-1044.
+4. Schulte-Körne, Gerd. "Mental Health Problems in a School Setting in Children
+   and Adolescents." Deutsches Ärzteblatt International 113, no. 11 (2016): 183.
