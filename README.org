@@ -1,0 +1,4 @@
+#+TITLE: AI Works
+
+In this repository, all the works done by @juanscr and @daples in the Artificial
+Intelligence course dictated by Olga Lucía Quintero.
